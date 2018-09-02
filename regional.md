@@ -1,11 +1,11 @@
-# **LoRaWAN Regional Parameters**
+# **LoRaWAN™ 1.0.2 Regional Parameters**
 
-Copyright © (2016) LoRa Alliance, Inc. All rights reserved.
+Copyright © (2017) LoRa Alliance, Inc. All rights reserved.
 
 NOTICE OF USE AND DISCLOSURE
 ---
 
-Copyright © LoRa Alliance, Inc. (2015). All Rights Reserved.
+Copyright © LoRa Alliance, Inc. (2017). All Rights Reserved.
 
 The information within this document is the property of the LoRa Alliance ("The Alliance") and its use and disclosure are subject to LoRa Alliance Corporate Bylaws, Intellectual Property Rights (IPR) Policy and Membership Agreements.
 
@@ -25,22 +25,22 @@ San Ramon, CA 94583
 
 The authors reserve the right to change
 
-LoRaWAN™ Regional Parameters
+LoRaWAN™ 1.0.2 Regional Parameters
 
-This document is a companion document to the LoRaWAN1.0.2 Specification
+This document is a companion document to the LoRaWAN 1.0.2 protocol Specification
 
 **Authors**:  
 LoRa Alliance Technical committee
 
-**Version**: V1.0  
-**Date**: 2016 July  
+**Revision**: B  
+**Date**: 2017 Feb  
 **Status:** Final
 
 > **Important note:** This is a candidate specification for the LoRa™ Alliance protocol named LoRaWAN™.
 
 ## 1 Introduction
 
-This document describes the LoRaWAN™ regional parameters for different regulatory regions worldwide. This document is a companion document to the protocol specification document, LoRaWAN Specification [LORAWAN], starting with version 1.0.2 of the specification. Separating the regional parameters from the protocol specification allows the addition of new regions to the former without impacting the latter document.
+This document describes the LoRaWAN™ regional parameters for different regulatory regions worldwide. This document is a companion document to the LoRaWAN 1.0.2 protocol specification [LORAWAN]. Separating the regional parameters from the protocol specification allows the addition of new regions to the former without impacting the latter document.
 
 ## 2 LoRaWAN Regional Parameters
 
@@ -71,10 +71,6 @@ The network channels can be freely attributed by the network operator. However t
 
 In order to access the physical medium the ETSI regulations impose some restrictions such  maximum time the transmitter can be on or the maximum time a transmitter can transmit per hour. The ETSI regulations allow the choice of using either a duty-cycle limitation or a so-called **Listen Before Talk Adaptive Frequency  gility** (LBT AFA) transmissions  management. The current LoRaWAN specification exclusively uses duty-cycled limited  transmissions to comply with the ETSI regulations.
 
-EU868MHz ISM band end-devices should use the following default parameters
-
-- Default ERP: 14 dBm
-
 EU868Mhz end-devices should be capable of operating in the 863 to 870 MHz frequency band and should feature a channel data structure to store the parameters of at least 16 channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
 
 The first three channels correspond to 868.1, 868.3, and 868.5 MHz / DR0 to DR5 and must be implemented in every end-device. Those default channels cannot be modified through the ***NewChannelReq*** command and guarantee a minimal common channel set between end-devices and network gateways.
@@ -89,9 +85,9 @@ The following table gives the list of frequencies that should be used by end-dev
 
 #### 2.1.3 EU863-870 Data Rate and End-point Output Power encoding
 
-There is no dwell time limitation for the EU863-870 PHY layer. The TxParamSetupReq MAC command does not have to be implemented by EU863-870 devices.
+There is no dwell time limitation for the EU863-870 PHY layer. The ***TxParamSetupReq*** MAC command is not implemented in EU863-870 devices.
 
-The following encoding is used for Data Rate (DR) and End-point Output Power (TXPower) in the EU863-870 band:
+The following encoding is used for Data Rate (DR) and End-point EIRP (TXPower) in the EU863-870 band:
 
 |**DataRate**|**Configuration**|**Indicative physical bit rate [bit/s]**|
 |---|---|---|
@@ -106,16 +102,24 @@ The following encoding is used for Data Rate (DR) and End-point Output Power (TX
 |8..15|RFU|
 **Table 4: TX data rate table**
 
+EIRP<sup>[1](#fn17)</sup> refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi. 
+
 |**TXPower**|**Configuration (ERP)**|
 |---|---|
-|0|20 dBm (if supported)|
-|1|14dBm|
-|2|11dBm|
-|3|8dBm|
-|4|5dBm|
-|5|2dBm|
-|6..15|RFU|
+|0|MaxEIRP|
+|1|MaxEIRP - 2dB|
+|2|MaxEIRP - 4dB|
+|3|MaxEIRP - 6dB|
+|4|MaxEIRP - 8dB|
+|5|MaxEIRP - 10dB|
+|6|MaxEIRP - 12dB|
+|7|MaxEIRP - 14dB|
+|8..15|RFU|
 **Table 5: TX power table**
+
+By default MaxEIRP is considered to be +16dBm. If the end-device cannot achieve 16dBm EIRP, the Max EIRP should be communicated to the network server using an out-of-band channel during the end-device commissioning process.
+
+<a name="fn17">1</a>: ERP = EIRP – 2.15dB; it is referenced to a half-wave dipole antenna whose gain is expressed in dBd
 
 #### 2.1.4 EU863-870 JoinAccept CFList
 
@@ -200,7 +204,25 @@ The RX1 receive window uses the same channel than the preceding uplink. The data
 
 The RX2 receive window uses a fixed frequency and data rate. The default parameters are 869.525 MHz / DR0 (SF12, 125 kHz)
 
-#### 2.1.8 EU863-870 Default Settings
+#### 2.1.8 EU863-870 Class B beacon and default downlink channel
+
+The beacons SHALL be transmitted using the following settings
+
+|DR|3|Corresponds to SF9 spreading factor with 125 kHz BW|
+|---|---|---|
+|CR|1|Colding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+
+The beacon frame content is:
+|**Size (bytes)**|2|4|2|7|2|
+|---|---|---|---|---|---|
+|**BCNPayload**|RFU|Time|CRC|GwSpecific|CRC|
+
+The beacon default broadcast frequency is 869.525MHz.
+
+The class B default downlink pingSlot frequency is 869.525MHz
+
+#### 2.1.9 EU863-870 Default Settings
 
 The following parameters are recommended values for the EU863-870Mhz band.
 
@@ -218,6 +240,8 @@ The following parameters are recommended values for the EU863-870Mhz band.
 If the actual parameter values implemented in the end-device are different from those default values (for example the end-device uses a longer RECEIVE\_DELAY1 and RECEIVE\_DELAY2 latency), those parameters must be communicated to the network server using an out-of-band channel during the end-device commissioning process. The network server may not accept parameters different from those default values.
 
 ### 2.2 US 902-928MHz ISM Band
+
+This section defines the regional parameters for the USA, Canada and all other countries adopting the entire FCC-Part15 regulations in 902-928 ISM band.
 
 #### 2.2.1 US902-928 Preamble Format
 
@@ -243,17 +267,18 @@ The 915 MHz ISM Band shall be divided into the following channel plans.
 
 **Figure 1: US902-928 channel frequencies**
 
-915 MHz ISM band end-devices should use the following default parameters:
+915 MHz ISM band end-devices are required to operate in compliance with the relevant regulatory specifications, to include.
 
-- Default radiated transmit output power: 20 dBm
-  - Devices, when transmitting with 125 kHz BW may use a maximum of +30 dBm. The transmission should never last more than 400 ms.|
-  - Devices, when transmitting with 500 kHz BW may use a maximum of +26 dBm|
+- Frequency-Hopping, Spread-Spectrum (FHSS) mode, which requires the device transmit at a measured conducted power level no greater than +30 dBm, for a period of no more than 400 msec and over at least 50 channels, each of which occupy no greater than 250 kHz of bandwidth.
+- Digital Transmission System (DTS) mode, which requires that the device use channels greater than or equal to 500 kHz and comply to a conducted Power Spectral Density measurement of no more than +8 dBm per 3kHz of spectrum. In practice, this limits the conducted output power of an end-device to +26 dBm.
+- Hybrid mode, which requires that the device transmit over multiple channels (this may be less than the 50 channels required for FHSS mode, but is recommended to be at least 4) while complying with the Power Spectral Density requirements of DTS mode and the 400 msec dwell time of FHSS mode. In practice this limits the measured conducted power of the end-device to 21 dBm.
+- Devices which use an antenna system with a directional gain greater than +6 dBi, but reduce the specified conducted output power by the amount in dB of directional gain over +6 dBi.
 
-US902-928 end-devices should be capable of operating in the 902 to 928 MHz frequency  band and should feature a channel data structure to store the parameters of 72 channels. A  channel data structure corresponds to a frequency and a set of data rates usable on this  frequency.
+US902-928 end-devices MUST be capable of operating in the 902 to 928 MHz frequency band and MUST feature a channel data structure to store the parameters for 72 channels. This channel data structure contains a list of frequencies and the set of data rates available for each frequency.
 
-If using the over-the-air activation procedure, the end-device should broadcast the JoinReq  message alternatively on a random 125 kHz channel amongst the 64 channels defined using  **DR0** and a random 500 kHz channel amongst the 8 channels defined using **DR4**. The end-device should change channel for every transmission.
+If using the over-the-air activation procedure, it is recommended that the end-device transmit the JoinRequest message alternatively on a random 125 kHz channel amongst the 64 channels defined using **DR0** and a random 500 kHz channel amongst the 8 channels defined using **DR4**. The end-device SHALL change channel for every transmission.  For rapid network acquisition in mixed channel plan environments, it is further recommended that the device follow a channel selection sequence (still random) which efficiently probes the groups of nine (8 + 1) channels which are typically implemented by smaller gateways (channel groups 07+64, 8-15+65, etc.).
 
-Personalized devices shall have all 72 channels enabled following a reset.
+Personalized devices shall have all 72 channels enabled following a reset and shall use the channels for which the device’s default data-rate is valid. 
 
 #### 2.2.3 US902-928 Data Rate and End-point Output Power encoding
 
