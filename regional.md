@@ -238,7 +238,7 @@ The 915 MHz ISM Band shall be divided into the following channel plans.
 - Upstream -- 8 channels numbered 64 to 71 utilizing LoRa 500 kHz BW at DR4 starting at 903.0 MHz and incrementing linearly by 1.6 MHz to 914.2 MHz
 
 - Downstream -- 8 channels numbered 0 to 7 utilizing LoRa 500 kHz BW at DR10 to DR13) starting at 923.3 MHz and incrementing linearly by 600 kHz to 927.5 MHz
- 
+
 ![us channels](figure03.png)
 
 **Figure 1: US902-928 channel frequencies**
@@ -742,7 +742,7 @@ The following synchronization words should be used:
 |---|---|---|
 LORA|0x34|8 symbols|
 
-LoRaWAN does not make use of GFSK modulation in the AU915-928 ISM band. 
+LoRaWAN does not make use of GFSK modulation in the AU915-928 ISM band.
 
 #### 2.5.2 AU915-928 Channel Frequencies
 
@@ -773,7 +773,7 @@ Personalized devices shall have all 72 channels enabled following a reset.
 The ***TxParamSetupReq*** MAC command does not have to be implemented by AU915-928 devices.
 
 The following encoding is used for Data Rate (**DR**) and End-point Output Power (**TXPower**) in the AU915-928 band:
- 
+
 |DataRate|Configuration|Indicative physical bit rate [bit/sec]|
 |---|---|---|
 |0|LoRa: SF10 / 125 kHz|980|
@@ -952,7 +952,7 @@ Personalized devices shall have all 96 channels enabled following a reset.
 There is no dwell time limitation for the CN470-510 PHY layer. The ***TxParamSetupReq*** MAC command does not have to be implemented by CN470-510 devices.
 
 The following encoding is used for Data Rate (**DR**) and End-point Output Power (**TXPower**) in the Cn470-510 band:
- 
+
 |DataRate|Configuration|Indicative physical bit rate [bit/sec]|
 |---|---|---|
 |0|LoRa: SF12 / 125 kHz|250|
@@ -1022,7 +1022,7 @@ The maximum **MACPayload** size length (M) is given by the following table. It i
 
 #### 2.6.7 CN470-510 Receive windows
 
-- The RX1 receive channel is a function of the upstream channel used to initiate the data exchange. The RX1 receive channel can be determined as follows. 
+- The RX1 receive channel is a function of the upstream channel used to initiate the data exchange. The RX1 receive channel can be determined as follows.
   - RX1 Channel Number = Uplink Channel Number modulo 48, for example, when transmitting channel number is 49, the rx1 channel number is 1.
 - The RX1 window data rate depends on the transmit data rate (see Table Table 37: CN470-510 Data rate offset below).
 - The RX2 (second receive window) settings uses a fixed data rate and frequency. Default parameters are 505.3 MHz / DR0
@@ -1406,3 +1406,30 @@ ACK_TIMEOUT|2 +/- 1 s (random delay between 1 and 3 seconds)
 
 If the actual parameter values implemented in the end-device are different from those default values (for example the end-device uses a longer RECEIVE_DELAY1 and RECEIVE_DELAY2 latency), those parameters must be communicated to the network server using an out-of-band channel during the end-device commissioning process. The network server may not accept parameters different from those default values.
 
+## 3 Revisions
+
+### 3.1 Revision 1.0
+
+- Initial revision, the regional parameters were extracted from the LoRaWANV1.0.1 and the Asia/PAC regional cluster definition was added
+- The ADR command for the US902-928 physical layer was amended to include ADR MAC command blocks
+- Added KR920-923 frequency band support
+- Modified EU868 PHY layer power limit from 14dBm EIRP to 14dBm ERP
+
+## 4 Bibliography
+
+### 4.1 References
+
+[LORAWAN] LoRaWAN Specification, V1.0.2, the LoRa Alliance, October 2016.
+
+## 5 NOTICE OF USE AND DISCLOSURE
+
+Copyright © LoRa Alliance, Inc. (2015). All Rights Reserved.  
+The information within this document is the property of the LoRa Alliance (“The Alliance”) and its use and disclosure are subject to LoRa Alliance Corporate Bylaws, Intellectual Property Rights (IPR) Policy and Membership Agreements.
+Elements of LoRa Alliance specifications may be subject to third party intellectual property rights, including without limitation, patent, copyright or trademark rights (such a third party may or may not be a member of LoRa Alliance). The Alliance is not responsible and shall not be held responsible in any manner for identifying or failing to identify any or all such third party intellectual property rights.
+This document and the information contained herein are provided on an “AS IS” basis and THE ALLIANCE DISCLAIMS ALL WARRANTIES EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO (A) ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OF THIRD PARTIES (INCLUDING WITHOUT LIMITATION ANY INTELLECTUAL PROPERTY RIGHTS INCLUDING PATENT, COPYRIGHT OR TRADEMARK RIGHTS) OR (B) ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE OR NONINFRINGEMENT.
+IN NO EVENT WILL THE ALLIANCE BE LIABLE FOR ANY LOSS OF PROFITS, LOSS OF BUSINESS, LOSS OF USE OF DATA, INTERRUPTION OFBUSINESS, OR FOR ANY OTHER DIRECT, INDIRECT, SPECIAL OR EXEMPLARY, INCIDENTIAL, PUNITIVE OR CONSEQUENTIAL DAMAGES OF ANY KIND, IN CONTRACT OR IN TORT, IN CONNECTION WITH THIS DOCUMENT OR THE INFORMATION CONTAINED HEREIN, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.  
+The above notice and this paragraph must be included on all copies of this document that are made.
+LoRa Alliance, Inc.
+2400 Camino Ramon, Suite 375
+San Ramon, CA 94583
+> Note: All Company, brand and product names may be trademarks that are the sole property of their respective owners.
