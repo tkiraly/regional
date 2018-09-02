@@ -735,6 +735,7 @@ If the actual parameter values implemented in the end-device are different from 
 ### 2.5 Australia 915-928MHz ISM Band
 
 #### 2.5.1 AU915-928 Preamble Format
+
 The following synchronization words should be used:
 
 |Modulation|Sync word|Preamble length|
@@ -742,6 +743,7 @@ The following synchronization words should be used:
 LORA|0x34|8 symbols|
 
 LoRaWAN does not make use of GFSK modulation in the AU915-928 ISM band. 
+
 #### 2.5.2 AU915-928 Channel Frequencies
 
 The AU ISM Band shall be divided into the following channel plans.
@@ -806,6 +808,7 @@ DR4 is identical to DR12, DR8...13 must be implemented in end-devices and are re
 #### 2.5.4 AU915-928 JoinAccept CFList
 
 The AU915-928 LoRaWAN does not support the use of the optional CFlist appended to the JoinAccept message. If the CFlist is not empty it is ignored by the end-device.
+
 #### 2.5.5 AU915-928 LinkAdrReq command
 
 For the AU915-928 version the ChMaskCntl field of the LinkADRReq command has the following meaning:
@@ -1137,6 +1140,7 @@ The TXPower table indicates power levels relative to the Max ERP level of the en
 **Table 42: TxPower table**
 
 #### 2.7.4 AS923 JoinAccept CFList
+
 The AS923 LoRaWAN implements an optional channel frequency list (CFlist) of 16 octets in the JoinAccept message.
 
 In this case the CFList is a list of five channel frequencies for the channels three to seven whereby each frequency is encoded as a 24 bits unsigned integer (three octets). All these channels are usable for DR0 to DR5 125 KHz LoRa modulation.  
