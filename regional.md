@@ -918,8 +918,11 @@ In China, this band is defined by SRRC to be used for civil metering application
 
 The 470 MHz ISM Band shall be divided into the following channel plans:
 
-- Upstream – 96 channels numbered 0 to 95 utilizing LoRa 125 kHz BW varying from
-- DR0 to DR5, using coding rate 4/5, starting at 470.3 MHz and incrementing linearly by 200 kHz to 489.3 MHz.
+- Upstream – 96 channels numbered 0 to 95 utilizing LoRa 125 kHz BW varying fromDR0 to DR5, using coding rate 4/5, starting at 470.3 MHz and incrementing linearly by 200 kHz to 489.3 MHz
+
+> Channel Index 6 to 38 and 45 to 77 are mainly used by China Electric Power. In the areas where these channels are used by China Electric Power, they should be disabled.
+
+- Downstream – 48 channels numbered 0 to 47 utilizing LoRa 125 kHz BW varying from DR0 to DR5, using coding rate 4/5, starting at 500.3 MHz and incrementing linearly by 200 kHz to 509.7 MHz
 
 ![china channels](figure14.png)
 
@@ -945,7 +948,7 @@ Personalized devices shall have all 96 channels enabled following a reset.
 
 There is no dwell time limitation for the CN470-510 PHY layer. The ***TxParamSetupReq*** MAC command does not have to be implemented by CN470-510 devices.
 
-The following encoding is used for Data Rate (**DR**) and End-point Output Power (**TXPower**) in the AU915-928 band:
+The following encoding is used for Data Rate (**DR**) and End-point Output Power (**TXPower**) in the Cn470-510 band:
  
 |DataRate|Configuration|Indicative physical bit rate [bit/sec]|
 |---|---|---|
@@ -954,7 +957,7 @@ The following encoding is used for Data Rate (**DR**) and End-point Output Power
 |2|LoRa: SF10 / 125 kHz|980|
 |3|LoRa: SF9 / 125 kHz|1760|
 |4|LoRa: SF8 / 125 kHz|3125|
-|4|LoRa: SF7 / 125 kHz|5470|
+|5|LoRa: SF7 / 125 kHz|5470|
 |6:15|RFU||
 
 **Table 34: CN470 Data rate table**
@@ -969,9 +972,9 @@ The following encoding is used for Data Rate (**DR**) and End-point Output Power
 |5|7 dBm|
 |6|5 dBm|
 |7|2 dBm|
-|8:15|RFU|
+|8...15|RFU|
 
-**Table 35 : CN470 TX power table**
+**Table 34 : CN470 TX power table**
 
 DR4 is identical to DR12, DR8...13 must be implemented in end-devices and are reserved for future applications.
 
@@ -981,20 +984,20 @@ The CN470-510 LoRaWAN does not support the use of the optional **CFlist** append
 
 #### 2.6.5 CN470-510 LinkAdrReq command
 
-For the AU915-928 version the ChMaskCntl field of the LinkADRReq command has the following meaning:
+For the CN470-510 version the ChMaskCntl field of the LinkADRReq command has the following meaning:
 
 |ChMaskCntl|ChMask applies to|
 |---|---|
 |0|Channels 0 to 15|
 |1|Channels 16 to 31|
-|1|Channels 32 to 47|
-|1|Channels 48 to 63|
+|2|Channels 32 to 47|
+|3|Channels 48 to 63|
 |4|Channels 64 to 79|
-|4|Channels 80 to 95|
+|5|Channels 80 to 95|
 |6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
 |7|RFU|
 
-**Table 45: CN470 ChMaskCntl value table**
+**Table 35: CN470 ChMaskCntl value table**
 
 If the ChMask field value is one of the values meaning RFU, then end-device should reject the command and unset the **Channel mask ACK** bit in its response.
 
@@ -1016,7 +1019,8 @@ The maximum **MACPayload** size length (M) is given by the following table. It i
 
 #### 2.6.7 CN470-510 Receive windows
 
-- The RX1 receive channel is a function of the upstream channel used to initiate the data exchange. The RX1 receive channel can be determined as follows. o RX1 Channel Number = Uplink Channel Number modulo 48, for example, when transmitting channel number is 49, the rx1 channel number is 1.
+- The RX1 receive channel is a function of the upstream channel used to initiate the data exchange. The RX1 receive channel can be determined as follows. 
+  - RX1 Channel Number = Uplink Channel Number modulo 48, for example, when transmitting channel number is 49, the rx1 channel number is 1.
 - The RX1 window data rate depends on the transmit data rate (see Table Table 37: CN470-510 Data rate offset below).
 - The RX2 (second receive window) settings uses a fixed data rate and frequency. Default parameters are 505.3 MHz / DR0
 
