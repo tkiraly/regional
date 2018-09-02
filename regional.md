@@ -518,7 +518,7 @@ The following encoding is used for Data Rate (DR) and End-device EIRP (TXPower) 
 |7|LoRa: FSK: 50 kbps|50000|
 |8..15|RFU|
 
-|**TXPower**|**Configuration**|
+|**TXPower**|**Configuration (EIRP)**|
 |---|---|
 |0|MaxEIRP|
 |1|MaxEIRP-2dB|
@@ -666,11 +666,11 @@ The following synchronization words should be used :
 |**LORA**|0x34|8 symbols|
 |**GFSK**|0xC194C1|3 bytes|
 
-**Table 21: EU433 synch words**
+**Table 26: EU433 synch words**
 
 #### 2.4.2 EU433 ISM Band channel frequencies
 
-The LoRaWAN can be used in the ETSI 433-434 MHz band as long as the radio device ERP is less than 10 mW (or 10 dBm).
+The LoRaWAN can be used in the ETSI 433-434 MHz band as long as the radio device EIRP is less than 12.15 dBm.
 
 The end-device transmit duty-cycle should be lower than 1%<sup>[1](#fn16)</sup>.
 
@@ -694,9 +694,9 @@ The following table gives the list of frequencies that should be used by end-dev
 
 #### 2.4.3 EU433 Data Rate and End-device Output Power encoding
 
-There is no dwell time limitation for the EU433 PHY layer. The ***TxParamSetupReq*** MAC command does not have to be implemented by EU433 devices.
+There is no dwell time limitation for the EU433 PHY layer. The ***TxParamSetupReq*** MAC command is not implemented by EU433 devices.
 
-The following encoding is used for Data Rate (DR) and End-point Output Power (TXPower)  in the EU433 band:
+The following encoding is used for Data Rate (DR) and End-point EIRP (TXPower)  in the EU433 band:
 
 |**DataRate**|**Configuration**|**Indicative physical bit rate [bit/s]**|
 |---|---|---|
@@ -710,16 +710,20 @@ The following encoding is used for Data Rate (DR) and End-point Output Power (TX
 |7|LoRa: FSK: 50 kbps|50000|
 |8..15|RFU|
 
-|**TXPower**|**Configuration**|
+|**TXPower**|**Configuration (EIRP)**|
 |---|---|
-|0|10 dBm|
-|1|7 dBm|
-|2|4 dBm|
-|3|1 dBm|
-|4|-2 dBm|
-|5|-5 dBm|
+|0|MaxEIRP|
+|1|MaxEIRP-2dB|
+|2|MaxEIRP-4dB|
+|3|MaxEIRP-6dB|
+|4|MaxEIRP-8dB|
+|5|MaxEIRP-10dB|
 |6..15|RFU|
-**Table 23: Data rate and TX power table**
+**Table 28: Data rate and TX power table**
+
+EIRP refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi.
+
+By default MAxEIRP is considered to be +12.15dBm. If the end-device cannot achieve 12.15dBm EIRP, the Max EIRP should be communicated to the network server using an out-of-band channel during the end-device commissioning process.
 
 #### 2.4.4 EU433 JoinAccept CFList
 
@@ -749,7 +753,7 @@ The EU433 LoRaWAN only supports a maximum of 16 channels. When **ChMaskCntl** fi
 |6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
 |7|RFU|
 
-**Table 24: ChMaskCntl value table**
+**Table 29: ChMaskCntl value table**
 
 If the ChMask field value is one of the values meaning RFU, then end-device should reject the command and unset the "**Channel mask ACK**" bit in its response.
 
@@ -768,7 +772,7 @@ The maximum **MACPayload** size length (*M*) is given by the following table. It
 |6|230|222  |
 |7|230|222  |
 |8:15|Not defined|Not defined|
-**Table 25: EU433 maximum payload size**
+**Table 30: EU433 maximum payload size**
 
 If the end-device will never operate with a repeater then the maximum application payload  length in the absence of the optional **FOpt** control field should be:
 
@@ -784,7 +788,7 @@ If the end-device will never operate with a repeater then the maximum applicatio
 |7|250|242|
 |8:15|Not defined|Not defined|
 
-**Table 26 : EU433 maximum payload size (not repeater compatible)**
+**Table 31 : EU433 maximum payload size (not repeater compatible)**
 
 #### 2.4.7 EU433 Receive windows
 
@@ -801,11 +805,31 @@ The RX1 receive window uses the same channel than the preceding uplink. The data
 |DR5|DR5|DR4|DR3|DR2|DR1|DR0|
 |DR6|DR6|DR5|DR4|DR3|DR2|DR1|
 |DR7|DR7|DR6|DR5|DR4|DR3|DR2|
-**Table 27: EU43 RX1DROffset**
+**Table 32 : EU433 downlink RX1 data rate mapping**
 
 The RX2 receive window uses a fixed frequency and data rate. The default parameters are 434.665MHz / DR0 (SF12 , 125kHz)
 
-#### 2.4.8 EU433 Default Settings
+#### 2.4.8 EU433 Class B beacon and default downlink channel
+
+The beacons SHALL be transmitted using the following settings
+
+|DR|3|Corresponds to SF9 spreading factor with 125 kHz BW|
+|---|---|---|
+|CR|1|Coding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+**Table 33 : EU433 beacon settings**
+
+The beacon frame content is:
+
+|Size (bytes)|2|4|2|7|2|
+|---|---|---|---|---|---|
+|BCNPayload|RFU|Time|CRC|GwSpecific|CRC|
+
+The beacon default broadcast frequency is 434.665MHz.
+
+The class B default downlink pingSlot frequency is 434.665MHz
+
+#### 2.4.9 EU433 Default Settings
 
 The following parameters are recommended values for the EU433   band.
 
@@ -838,23 +862,19 @@ LoRaWAN does not make use of GFSK modulation in the AU915-928 ISM band.
 
 The AU ISM Band shall be divided into the following channel plans.
 
-- Upstream – 64 channels numbered 0 to 63 utilizing LoRa 125 kHz BW varying from DR0 to DR3, using coding rate 4/5, starting at 915.2 MHz and incrementing linearly by 200 kHz to 927.8 MHz
-- Upstream – 8 channels numbered 64 to 71 utilizing LoRa 500 kHz BW at DR4 starting at 915.9 MHz and incrementing linearly by 1.6 MHz to 927.1 MHz
+- Upstream – 64 channels numbered 0 to 63 utilizing LoRa 125 kHz BW varying from DR0 to DR5, using coding rate 4/5, starting at 915.2 MHz and incrementing linearly by 200 kHz to 927.8 MHz
+- Upstream – 8 channels numbered 64 to 71 utilizing LoRa 500 kHz BW at DR6 starting at 915.9 MHz and incrementing linearly by 1.6 MHz to 927.1 MHz
 - Downstream – 8 channels numbered 0 to 7 utilizing LoRa 500 kHz BW at DR8 to DR13) starting at 923.3 MHz and incrementing linearly by 600 kHz to 927.5 MHz
 
 ![au channels](figure13.png)
 
 **Figure 2: AU915-928 channel frequencies**
 
-AU ISM band end-devices should use the following default parameters:
-
-- Default radiated transmit output power: 20 dBm o All Devices may use a maximum of +30 dBm.  
-  - Devices, when transmitting with 125 kHz BW must frequency hop using a minimum of 20 channels. . The transmission shall never last more than 400 ms.
-  - Devices, when transmitting with 500 kHz BW may use a maximum of +26 dBm
+AU ISM band end-devices may use a maximum EIRP of +30 dBm.
 
 AU915-928 end-devices should be capable of operating in the 915 to 928 MHz frequency band and should feature a channel data structure to store the parameters of 72 channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
 
-If using the over-the-air activation procedure, the end-device should broadcast the JoinReq message alternatively on a random 125 kHz channel amongst the 64 channels defined using **DR0** and a random 500 kHz channel amongst the 4 channels defined using **DR4**. The enddevice should change channel for every transmission.
+If using the over-the-air activation procedure, the end-device should broadcast the JoinReq message alternatively on a random 125 kHz channel amongst the 64 channels defined using **DR0** and a random 500 kHz channel amongst the 8 channels defined using **DR6**. The end-device should change channel for every transmission.
 
 Personalized devices shall have all 72 channels enabled following a reset.
 
@@ -866,12 +886,14 @@ The following encoding is used for Data Rate (**DR**) and End-point Output Power
 
 |DataRate|Configuration|Indicative physical bit rate [bit/sec]|
 |---|---|---|
-|0|LoRa: SF10 / 125 kHz|980|
-|1|LoRa: SF9 / 125 kHz|1760|
-|2|LoRa: SF8 / 125 kHz|3125|
-|3|LoRa: SF7 / 125 kHz|5470|
-|4|LoRa: SF8 / 500 kHz|12500|
-|5:7|RFU||
+|0|LoRa: SF12 / 125 kHz|250|
+|1|LoRa: SF11 / 125 kHz|440|
+|2|LoRa: SF10 / 125 kHz|980|
+|3|LoRa: SF9 / 125 kHz|1760|
+|4|LoRa: SF8 / 125 kHz|3125|
+|5|LoRa: SF7 / 125 kHz|5470|
+|6|LoRa: SF8 / 500 kHz|12500|
+|7|RFU||
 |8|LoRa: SF12 / 500 kHz|980|
 |9|LoRa: SF11 / 500 kHz|1760|
 |10|LoRa: SF10 / 500 kHz|3900|
@@ -880,20 +902,21 @@ The following encoding is used for Data Rate (**DR**) and End-point Output Power
 |13|LoRa: SF7 / 500 kHz|21900|
 |14:15|RFU||
 
-**Table 28: AU915 Data rate table**
+**Table 34: AU915-928 Data rate table**
 
-|TXPower|Configuration|
+DR6 is identical to DR12, DR8...13 must be implemented in end-devices and are reserved for future applications.
+
+|TXPower|Configuration (EIRP)|
 |---|---|
-|0|30 dBm - 2*TXpower|
-|1|28 dBm|
-|2|26 dBm|
-|3 : 9|...|
-|10|10 dBm|
+|0|MaxEIRP|
+|1:10|MaxEIRP - 2*TXPower|
 |11:15|RFU|
 
-**Table 29 : AU915 TX power table**
+**Table 35 : AU915-928 TX power table**
 
-DR4 is identical to DR12, DR8...13 must be implemented in end-devices and are reserved for future applications.
+EIRP refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi.
+
+By default MaxEIRP is considered to be +30dBm. If the end-device cannot achieve 30dBm EIRP, the Max EIRP should be communicated to the network server using an out-of-band channel during the end-device commissioning process.
 
 #### 2.5.4 AU915-928 JoinAccept CFList
 
@@ -915,7 +938,6 @@ For the AU915-928 version the ChMaskCntl field of the LinkADRReq command has the
 **Table 30: ChMaskCntl value table**
 
 If **ChMaskCntl** = 6 (resp 7) then 125 kHz channels are enabled (resp disabled). Simultaneously the channels 64 to 67 are set according to the **ChMask** bit mask.
-> Note: ACMA regulation requires hopping over at least 20 channels when using channels that do not meet a minimum 6 dB bandwidth of 500 kHz.
 
 #### 2.5.6 AU915-928 Maximum payload size
 
@@ -923,12 +945,14 @@ The maximum **MACPayload** size length (M) is given by the following table. It i
 
 |DataRate|M|N|
 |---|---|---|
-|0|19|11|
-|1|61|53|
-|2|134|126|
-|3|250|242|
-|4|250|242|
-|5:7|Not defined|Not defined|
+|0|59|51|
+|1|59|51|
+|2|59|51|
+|3|123|115|
+|4|230|222|
+|5|230|222|
+|6|230|222|
+|7|Not defined|Not defined|
 |8|41|33|
 |9|117|109|
 |10|230|222|
@@ -937,7 +961,7 @@ The maximum **MACPayload** size length (M) is given by the following table. It i
 |13|230|222|
 |14:15|Not defined|Not defined|
 
-**Table 31: AU915-928 maximum payload size**
+**Table 37: AU915-928 maximum payload size**
 
 The greyed lines correspond to the data rates that may be used by an end-device behind a repeater.
 
@@ -945,12 +969,14 @@ If the end-device will never operate with a repeater then the maximum applicatio
 
 |DataRate|M|N|
 |---|---|---|
-|0|19|11|
-|1|61|53|
-|2|134|126|
-|3|250|242|
+|0|59|51|
+|1|59|51|
+|2|59|51|
+|3|123|115|
 |4|250|242|
-|5:7|Not defined|Not defined|
+|5|250|242|
+|6|250|242|
+|7|Not defined|Not defined|
 |8|61|53|
 |9|137|129|
 |10|250|242|
@@ -958,7 +984,7 @@ If the end-device will never operate with a repeater then the maximum applicatio
 |12|250|242|
 |13|250|242|
 |14:15|Not defined|Not defined|
-**Table 32: AU915-928 maximum payload size(not repeater compatible)**
+**Table 38: AU915-928 maximum payload size(not repeater compatible)**
 
 #### 2.5.7 AU915-928 Receive windows
 
@@ -967,19 +993,57 @@ If the end-device will never operate with a repeater then the maximum applicatio
 - The RX1 window data rate depends on the transmit data rate (see Table 24 below).
 - The RX2 (second receive window) settings uses a fixed data rate and frequency. Default parameters are 923.3Mhz / DR8  
 
-|Upstream data rate|Downstream data rate|Downstream data rate|Downstream data rate|Downstream data rate|
-|---|---|---|---|---|
-|RX1DROffset|0|1|2|3|
-|DR0|DR10|DR9|DR8|DR8|
-|DR1|DR11|DR10|DR9|DR8|
-|DR2|DR12|DR11|DR10|DR9|
-|DR3|DR13|DR12|DR11|DR10|
-|DR4|DR13|DR13|DR12|DR11|
-**Table 33: AU RX1DROffset**
+|Upstream data rate|Downstream data rate|Downstream data rate|Downstream data rate|Downstream data rate|Downstream data rate|Downstream data rate|
+|---|---|---|---|---|---|---|
+|RX1DROffset|0|1|2|3|4|5|
+|DR0|DR8|DR8|DR8|DR8|DR8|DR8|
+|DR1|DR9|DR8|DR8|DR8|DR8|DR8|
+|DR2|DR10|DR9|DR8|DR8|DR8|DR8|
+|DR3|DR11|DR10|DR9|DR8|DR8|DR8|
+|DR4|DR12|DR11|DR10|DR9|DR8|DR8|
+|DR5|DR13|DR12|DR11|DR10|DR9|DR8|
+|DR6|DR13|DR13|DR12|DR11|DR10|DR9|
+**Table 33: AU915-928 downlink RX1 data rate mapping**
 
-The allowed values for RX1DROffset are in the [0:3] range. Values in the range [4:7] are reserved for future use.
+The allowed values for RX1DROffset are in the [0:5] range. Values in the range [6:7] are reserved for future use.
 
-#### 2.5.8 AU915-928 Default Settings
+#### 2.5.8 AU915-928 Class B beacon
+The beacons are transmitted using the following settings:
+|DR|10|Corresponds to SF10 spreading factor with 500kHz bw|
+|---|---|---|
+|CR |1|Coding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+|frequencies|923.3 to 927.5MHz with 600kHz steps|Beaconing is performed on the same channel that normal downstream traffic as defined in the Class A specification|
+**Table 40 : AU915-928 beacon settings**
+
+The downstream channel used for a given beacon is:
+Channel = [*floor* ( *beacon_time/beacon_period* )] *modulo* 8
+
+
+- whereby beacon_time is the integer value of the 4 bytes "Time" field of the beacon frame
+- whereby beacon_period is the periodicity of beacons , 128 seconds
+- whereby *floor(x)* designates rounding to the integer immediately inferior or equal to x
+
+> Example: the first beacon will be transmitted on 923.3Mhz , the second on 923.9MHz,  the 9<sup>th</sup> beacon will be on 923.3Mhz again.
+
+|Beacon channel nb|Frequency [MHz]|
+|---|---|
+|0|923.3|
+|1|923.9|
+|2|924.5|
+|3|925.1|
+|4|925.7|
+|5|926.3|
+|6|926.9|
+|7|927.5|
+
+The beacon frame content is:
+
+|Size (bytes)|3|4|2|7|1|2|
+|---|---|---|---|---|---|---|
+|BCNPayload|RFU|Time|CRC|GwSpecific|RFU|CRC|
+
+#### 2.5.9 AU915-928 Default Settings
 
 The following parameters are recommended values for the AU915-928 band.
 |Variable name|Variable value|
