@@ -1242,3 +1242,167 @@ The following parameters are recommended values for the AS923MHz band.
 |ACK_TIMEOUT|2 +/- 1 s (random delay between 1 and 3 seconds)|
 
 If the actual parameter values implemented in the end-device are different from those default values (for example the end-device uses a longer RECEIVE_DELAY1 and RECEIVE_DELAY2 latency), those parameters must be communicated to the network server using an out-of-band channel during the end-device commissioning process. The network server may not accept parameters different from those default values.
+
+### 2.8 South Korea 920-923MHz ISM Band
+
+#### 2.8.1 KR920-923 Preamble Format
+
+The following synchronization words should be used:
+
+|Modulation|Sync word|Preamble length|
+|---|---|---|
+|LORA|0x34|8 symbols|
+
+**Table 46 :KR920-923 synch words**
+
+#### 2.8.2 KR920-923 ISM Band channel frequencies
+
+The center frequency, bandwidth and maximum EIRP output power for the South Korea RFID/USN frequency band are already defined by Korean Government. Basically Korean Government allocated LPWA based IoT network frequency band from 920.9 to 923.3MHz.
+
+|Center frequency (MHz)|Bandwidth (kHz)|Maximum EIRP output power (dBm)|Maximum EIRP output power (dBm)|
+|---|---|---|---|
+|||For end-device|For gateway|
+|920.9|125|10|23|
+|921.1|125|10|23|
+|921.3|125|10|23|
+|921.5|125|10|23|
+|921.7|125|10|23|
+|921.9|125|10|23|
+|922.1|125|14|23|
+|922.3|125|14|23|
+|922.5|125|14|23|
+|922.7|125|14|23|
+|922.9|125|14|23|
+|923.1|125|14|23|
+|923.3|125|14|23|
+**Table 47: Center frequency, bandwidth, maximum EIRP output power table**
+
+The three following default channels (922.1, 922.3 and 922.5MHz / DR0 to DR5) determined by the network operator from the set of available channels as defined by the South Korean regulation must be implemented in every KR920-923MHz end-device, and cannot be alterable by the NewChannelReq command. Those channels are the minimum set that all network gateways should always be listening on to guarantee a minimal common channel set between end-devices and network gateways.
+
+|Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|
+|---|---|---|---|---|
+|LoRa|125|922.10<br/>922.30<br/>922.50|DR0 to DR5 / 0.3-5 kbps|3|
+**Table 48: KR920-923 default channels**
+
+In order to access the physical medium the South Korea regulations impose some restrictions. The South Korea regulations allow the choice of using either a duty-cycle limitation or a so-called Listen Before Talk Adaptive Frequency Agility (LBT AFA) transmissions management. The current LoRaWAN specification for the KR920-923 ISM band exclusively uses LBT channel access rule to maximize MACPayload size length and comply with the South Korea regulations.
+
+KR920-923MHz ISM band end-devices should use the following default parameters
+
+- Default EIRP output power for end-device(920.9~921.9MHz): 10 dBm
+- Default EIRP output power for end-device(922.1~923.3MHz): 14 dBm
+- Default EIRP output power for gateway: 23 dBm
+
+KR920-923MHz end-devices should be capable of operating in the 920 to 923MHz frequency band and should feature a channel data structure to store the parameters of at least 16 channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
+
+The following table gives the list of frequencies that should be used by end-devices to broadcast the JoinReq message.
+
+|Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|
+|---|---|---|---|---|
+|LoRa|125|922.10<br/>922.30<br/>922.50|DR0 to DR5 / 0.3-5 kbps|3|
+**Table 49: KR920-923 JoinReq Channel List**
+
+#### 2.8.3 KR920-923 Data Rate and End-device Output Power encoding
+
+There is no dwell time limitation for the KR920-923 PHY layer. The TxParamSetupReq MAC command does not have to be implemented by the KR920-923 devices.
+
+The following encoding is used for Data Rate (DR), corresponding Configurations and maximum EIRP Output Power (TXPower) in the KR920-923 band:
+
+|DataRate|Configuration|Indicative physical bit rate [bit/s]|
+|---|---|---|
+|0|LoRa: SF12 / 125 kHz|250|
+|1|LoRa: SF11 / 125 kHz|440|
+|2|LoRa: SF10 / 125 kHz|980|
+|3|LoRa: SF9 / 125 kHz|1760|
+|4|LoRa: SF8 / 125 kHz|3125|
+|5|LoRa: SF7 / 125 kHz|5470|
+|6..15|RFU||
+**Table 50: TX Data rate table**
+
+|TXPower|Configuration, max EIRP allowed|
+|---|---|
+|0|20 dBm|
+|1|14 dBm|
+|2|10 dBm|
+|3|8 dBm|
+|4|5 dBm|
+|5|2 dBm|
+|6|0 dBm|
+|7..15|RFU|
+**Table 51: TX power table**
+
+#### 2.8.4 KR920-923 JoinAccept CFList
+
+The KR920-923 ISM band LoRaWAN implements an optional **channel frequency list** (CFlist) of 16 octets in the JoinAccept message.
+
+In this case the CFList is a list of five channel frequencies for the channels four to eight whereby each frequency is encoded as a 24 bits unsigned integer (three octets). All these channels are usable for DR0 to DR5 125kHz LoRa modulation. The list of frequencies is followed by a single RFU octet for a total of 16 octets.
+
+|**Size (bytes)**|3|3|3|3|3|1|
+|---|---|---|---|---|---|---|
+|CFList|Freq Ch4|Freq Ch5|Freq Ch6|Freq Ch7|Freq Ch8|RFU|
+The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 MHz are reserved for future use. This allows setting the frequency of a channel anywhere between 100 MHz to 1.67 GHz in 100 Hz steps. Unused channels have a frequency value of 0. The **CFList** is optional and its presence can be detected by the length of the join-accept message. If present, the **CFList** replaces all the previous channels stored in the end-device apart from the three default channels as defined in Chapter 8.7.2. The newly defined channels are immediately enabled and usable by the end-device for communication.
+
+#### 2.8.5 KR920-923 LinkAdrReq command
+
+The KR920-923 LoRaWAN only supports a maximum of 16 channels. When ChMaskCntl field is 0 the ChMask field individually enables/disables each of the 16 channels.
+
+ChMaskCntl|ChMask applies to|
+|---|---|
+|0|Channels 1 to 16|
+|1|RFU|
+|..|..|
+|4|RFU|
+|5|RFU|
+|6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
+|7|RFU|
+**Table 52: ChMaskCntl value table**
+
+If the ChMaskCntl field value is one of values meaning RFU, the end-device should reject the command and unset the "**Channel mask ACK**" bit in its response.
+
+#### 2.8.6 KR920-923 Maximum payload size
+
+The maximum **MACPayload** size length *(M)* is given by the following table for the regulation of dwell time; less than 4 sec with LBT. It is derived from limitation of the PHY layer depending on the effective modulation rate used taking into account a possible repeater encapsulation layer. The maximum application payload length in the absence of the optional **FOpt** control field *(N)* is also given for information only. The value of N might be smaller if the **FOpt** field is not empty:
+
+|DataRate|M|N|
+|---|---|---|
+|0|73|65|
+|1|159|151|
+|2|250|242|
+|3|250|242|
+|4|250|242|
+|5|250|242|
+|6:15|Not defined|Not defined|
+**Table 53: KR920-923 maximum payload size**
+
+#### 2.8.7 KR920-923 Receive windows
+
+The RX1 receive window uses the same channel than the preceding uplink. The data rate is a function of the uplink data rate and the RX1DROffset as given by the following table. The allowed values for RX1DROffset are in the [0:5] range. Values in the [6:7] range are reserved for future use.
+
+|RX1DROffset Upstream data rate|0|1|2|3|4|5|
+||Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|
+|---|---|---|---|---|---|---|
+|DR0|DR0|DR0|DR0|DR0|DR0|DR0|
+|DR1|DR1|DR0|DR0|DR0|DR0|DR0|
+|DR2|DR2|DR1|DR0|DR0|DR0|DR0|
+|DR3|DR3|DR2|DR1|DR0|DR0|DR0|
+|DR4|DR4|DR3|DR2|DR1|DR0|DR0|
+|DR5|DR5|DR4|DR3|DR2|DR1|DR0|
+
+The RX2 receive window uses a fixed frequency and data rate. The default parameters are 921.90MHz / DR0 (SF12, 125 kHz)
+
+#### 2.8.8 KR920-923 Default Settings
+
+The following parameters are recommended values for the KR920-923Mhz band.
+
+|Variable name|Variable value|
+|---|---|
+RECEIVE_DELAY1 |1 s
+RECEIVE_DELAY2 |2 s (must be RECEIVE_DELAY1 + 1s)
+JOIN_ACCEPT_DELAY1|5 s
+JOIN_ACCEPT_DELAY2|6 s
+MAX_FCNT_GAP|16384
+ADR_ACK_LIMIT|64
+ADR_ACK_DELAY|32
+ACK_TIMEOUT|2 +/- 1 s (random delay between 1 and 3 seconds)
+
+If the actual parameter values implemented in the end-device are different from those default values (for example the end-device uses a longer RECEIVE_DELAY1 and RECEIVE_DELAY2 latency), those parameters must be communicated to the network server using an out-of-band channel during the end-device commissioning process. The network server may not accept parameters different from those default values.
+
