@@ -44,7 +44,7 @@ This document describes the LoRaWAN™ regional parameters for different regulat
 
 ## 2 LoRaWAN Regional Parameters
 
-## 2.1 EU 863-870MHz ISM Band
+### 2.1 EU 863-870MHz ISM Band
 
 #### 2.1.1 EU863-870 Preamble Format
 
