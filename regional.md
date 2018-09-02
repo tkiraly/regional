@@ -238,7 +238,7 @@ The 915 MHz ISM Band shall be divided into the following channel plans.
 - Upstream -- 8 channels numbered 64 to 71 utilizing LoRa 500 kHz BW at DR4 starting at 903.0 MHz and incrementing linearly by 1.6 MHz to 914.2 MHz
 
 - Downstream -- 8 channels numbered 0 to 7 utilizing LoRa 500 kHz BW at DR10 to DR13) starting at 923.3 MHz and incrementing linearly by 600 kHz to 927.5 MHz
-
+ 
 ![us channels](figure03.png)
 
 **Figure 1: US902-928 channel frequencies**
@@ -1052,3 +1052,189 @@ The following parameters are recommended values for the CN470-510 band.
 |ACK_TIMEOUT|2 +/- 1 s (random delay between 1 and 3 seconds)|
 
 If the actual parameter values implemented in the end-device are different from those default values (for example the end-device uses a longer RECEIVE_DELAY1 & 2 latency), those parameters must be communicated to the network server using an out-of-band channel during the end-device commissioning process. The network server may not accept parameters different from those default values.
+
+### 2.7 AS923MHz ISM Band
+
+#### 2.7.1 AS923 Preamble Format
+
+The following synchronization words should be used:
+
+|Modulation|Sync word|Preamble length|
+|---|---|---|
+|LORA|0x34|8 symbols|
+|GFSK|0xC194C1|5 bytes|
+
+**Table 38: AS923 synch words**
+
+#### 2.7.2 AS923 ISM Band channel frequencies
+
+This section applies to regions where the frequencies [923…923.5MHz] are comprised in the ISM band, which is the case for the following countries:
+
+- Brunei [923-925 MHz]
+- Cambodia [923-925 MHz]
+- Hong Kong [920-925 MHz]
+- Indonesia [923-925 MHz]
+- Japan [920-928 MHz]
+- Laos [923-925 MHz]
+- New Zealand [915-928 MHz]
+- Singapore [920-925 MHz]
+- Taiwan [922-928 MHz]
+- Thailand [920-925 MHz]
+- Vietnam [920-925 MHz]
+
+The network channels can be freely attributed by the network operator. However the two following default channels must be implemented in every AS923MHz end-device. Those channels are the minimum set that all network gateways should always be listening on.
+
+|Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|Duty cycle|
+|---|---|---|---|---|---|
+|LoRa|125|923.20<br/>923.40|DR0 to DR5  / 0.3-5 kbps|2|< 1%|
+**Table 39: AS923 default channels**
+
+Those default channels must be implemented in every end-device and cannot be modified through the NewChannelReq command and guarantee a minimal common channel set between end-devices and network gateways.
+
+AS923MHz ISM band end-devices should use the following default parameters
+
+- Default ERP: 14 dBm
+
+AS923MHz end-devices should feature a channel data structure to store the parameters of at least 16 channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
+
+The following table gives the list of frequencies that should be used by end-devices to broadcast the JoinReq message.
+
+|Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|Duty cycle|
+|---|---|---|---|---|---|
+|LoRa|125|923.2<br/>923.40|DR2|2|< 1%|
+**Table 40: AS923 JoinReq Channel List**
+
+The default JoinReq Data Rate is DR2 (SF10/125KHz), this setting ensures that end-devices are compatible with the 400ms dwell time limitation until the actual dwell time limit is notified to the end-device by the network server via the MAC command "TxParamSetupReq". The JoinReq message transmit duty-cycle shall follow the rules described in chapter "Retransmissions back-off" of the LoRaWAN specification document.
+
+#### 2.7.3 AS923 Data Rate and End-point Output Power encoding
+
+The following encoding is used for Data Rate (DR) in the AS923 band:
+
+|DataRate|Configuration|Indicative physical bit rate [bit/s]|
+|---|---|---|
+|0|LoRa: SF12 / 125 kHz|250|
+|1|LoRa: SF11 / 125 kHz|440|
+|2|LoRa: SF10 / 125 kHz|980|
+|3|LoRa: SF9 / 125 kHz|1760|
+|4|LoRa: SF8 / 125 kHz|3125|
+|5|LoRa: SF7 / 125 kHz|5470|
+|6|LoRa: SF7 / 250 kHz|11000|
+|7|FSK: 50 kbps|50000|
+|8..15|RFU|
+**Table 41: Data rate table**
+
+The TXPower table indicates power levels relative to the Max ERP level of the end-device, as per the following table:
+
+|TXPower|Configuration|
+|---|---|
+|0|Max ERP|
+|1|Max ERP – 2dB|
+|2|Max ERP – 4dB|
+|3|Max ERP – 6dB|
+|4|Max ERP – 8dB|
+|5|Max ERP – 10dB|
+|6..15|RFU|
+**Table 42: TxPower table**
+
+#### 2.7.4 AS923 JoinAccept CFList
+The AS923 LoRaWAN implements an optional channel frequency list (CFlist) of 16 octets in the JoinAccept message.
+
+In this case the CFList is a list of five channel frequencies for the channels three to seven whereby each frequency is encoded as a 24 bits unsigned integer (three octets). All these channels are usable for DR0 to DR5 125 KHz LoRa modulation.  
+
+|Size (bytes)||3|3|3|3|3|1
+|---|---|---|---|---|---|---|---|
+CFList|Freq Ch3|Freq Ch4|Freq Ch5|Freq Ch6|Freq Ch7|RFU|
+
+The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 MHz are reserved for future use. This allows setting the frequency of a channel anywhere between 915 and 928MHz in 100 Hz steps. Unused channels have a frequency value of 0. The CFList is optional and its presence can be detected by the length of the join-accept message. If present, the CFList replaces all the previous channels stored in the end-device apart from the two default channels as defined in Chapter 1.7.2. The newly defined channels are immediately enabled and usable by the end-device for communication.
+
+#### 2.7.5 AS923 LinkAdrReq command
+
+The AS923 LoRaWAN only supports a maximum of 16 channels. When ChMaskCntl field is 0 the ChMask field individually enables/disables each of the 16 channels.
+
+|ChMaskCntl|ChMask applies to|
+|---|---|
+|0|Channels 1 to 16|
+|1|RFU|
+|..|..|
+|4|RFU|
+|5|RFU|
+|6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
+|7|RFU|
+
+**Table 43: ChMaskCntl value table**
+If the ChMask field value is one of values meaning RFU, the end-device should reject the command and unset the “Channel mask ACK” bit in its response.
+
+#### 2.7.6 AS923 Maximum payload size
+
+The maximum MACPayload size length *(M)* is given by the following table for both dwell time configurations: No Limit and 400ms. It is derived from the PHY layer limitation depending on the effective modulation rate used taking into account a possible repeater encapsulation layer.
+
+|DataRate|Uplink MAC Payload Size (M)|Uplink MAC Payload Size (M)|Downlink MAC Payload Size (M)|Downlink MAC Payload Size (M)|
+|---|---|---|---|---|
+||UplinkDwellTime = 0|UplinkDwellTime   = 1|DownlinkDwellTime = 0|DownlinkDwellTime  = 1|
+|0|59|N/A|59|N/A|
+|1|59|N/A|59|N/A|
+|2|59|19|59|19|
+|3|123|61|123|61|
+|4||230|133|230|134|
+|5|230|250|230|250|
+|6|230|250|230|250|
+|7|230|250|230|250|
+|8:15|RFU|RFU|
+
+**Table 44: AS923 maximum payload size**
+
+If the end-device will never operate with a repeater then the maximum MAC payload length should be:
+
+|DataRate|Uplink MAC Payload Size (M)|Uplink MAC Payload Size (M)|Downlink MAC Payload Size (M)|Downlink MAC Payload Size (M)|
+|---|---|---|---|---|
+||UplinkDwellTime = 0|UplinkDwellTime = 1|DownlinkDwellTime = 0|DownlinkDwellTim e  = 1|
+|0|59|N/A|59|N/A|
+|1|59|N/A|59|N/A|
+|2|59|19|59|19|
+|3|123|61|123|61|
+|4|250|133|250|134|
+|5|250|250|250|250|
+|6|250|250|250|250|
+|7|250|250|250|250|
+|8:15|RFU|RFU|RFU|RFU|
+
+**Table 45: AS923 maximum payload size (not repeater compatible)**
+
+The maximum application payload length in the absence of the optional FOpt control field *(N)* is eight bytes lower than the MACPayload value in the above table. The value of N might be smaller if the FOpt field is not empty.
+
+#### 2.7.7 AS923 Receive windows
+
+The RX1 receive window uses the same channel than the preceding uplink. The data rate is a function of the uplink data rate and the RX1DROffset as following:
+
+Downstream data rate in RX1 slot = *MIN* (5, *MAX* (MinDR, Upstream data rate – Effective_RX1DROffset))
+
+MinDR depends on the DownlinkDwellTime bit sent to the device in the TxParamSetupReq command:
+
+- Case DownlinkDwellTime = 0 (No limit): MinDR = 0
+- Case DownlinkDwellTime = 1 (400ms): MinDR = 2
+
+The allowed values for RX1DROffset are in the [0:7] range, encoded as per the below table:
+
+|RX1DROffset (Coded value)|0|1|2|3|4|5|6|7|
+|---|---|---|---|---|---|---|---|---|
+|Effective_RX1DROffset|0|1|2|3|4|5|-1|-2|
+
+Values in the [6:7] range allow setting the Downstream RX1 data rate higher than Upstream data rate.
+The RX2 receive window uses a fixed frequency and data rate. The default parameters are 923.2 MHz / DR2 (SF10/125KHz).
+
+#### 2.7.8 AS923 Default Settings
+
+The following parameters are recommended values for the AS923MHz band.
+
+|Variable name|Variable value|
+|---|---|
+|RECEIVE_DELAY1|1s|
+|RECEIVE_DELAY2|2 s (must be RECEIVE_DELAY1 + 1s)|
+|JOIN_ACCEPT_DELAY1|5 s|
+|JOIN_ACCEPT_DELAY2|6 s|
+|MAX_FCNT_GAP|16384|
+|ADR_ACK_LIMIT|64|
+|ADR_ACK_DELAY|32|
+|ACK_TIMEOUT|2 +/- 1 s (random delay between 1 and 3 seconds)|
+
+If the actual parameter values implemented in the end-device are different from those default values (for example the end-device uses a longer RECEIVE_DELAY1 and RECEIVE_DELAY2 latency), those parameters must be communicated to the network server using an out-of-band channel during the end-device commissioning process. The network server may not accept parameters different from those default values.
