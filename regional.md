@@ -201,6 +201,7 @@ The RX1 receive window uses the same channel than the preceding uplink. The data
 |DR5|DR5|DR4|DR3|DR2|DR1|DR0|
 |DR6|DR6|DR5|DR4|DR3|DR2|DR1|
 |DR7|DR7|DR6|DR5|DR4|DR3|DR2|
+**Table 9: EU863-870 downlink RX1 data rate mapping**
 
 The RX2 receive window uses a fixed frequency and data rate. The default parameters are 869.525 MHz / DR0 (SF12, 125 kHz)
 
@@ -212,6 +213,7 @@ The beacons SHALL be transmitted using the following settings
 |---|---|---|
 |CR|1|Colding rate = 4/5|
 |Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+**Table 10: EU863-870 beacon settings**
 
 The beacon frame content is:
 |**Size (bytes)**|2|4|2|7|2|
@@ -278,13 +280,13 @@ US902-928 end-devices MUST be capable of operating in the 902 to 928 MHz frequen
 
 If using the over-the-air activation procedure, it is recommended that the end-device transmit the JoinRequest message alternatively on a random 125 kHz channel amongst the 64 channels defined using **DR0** and a random 500 kHz channel amongst the 8 channels defined using **DR4**. The end-device SHALL change channel for every transmission.  For rapid network acquisition in mixed channel plan environments, it is further recommended that the device follow a channel selection sequence (still random) which efficiently probes the groups of nine (8 + 1) channels which are typically implemented by smaller gateways (channel groups 07+64, 8-15+65, etc.).
 
-Personalized devices shall have all 72 channels enabled following a reset and shall use the channels for which the device’s default data-rate is valid. 
+Personalized devices shall have all 72 channels enabled following a reset and shall use the channels for which the device's default data-rate is valid.
 
 #### 2.2.3 US902-928 Data Rate and End-point Output Power encoding
 
-FCC regulation imposes a maximum dwell time of 400ms on uplinks. The ***TxParamSetupReq*** MAC command does not have to be implemented by US902-928 devices.
-
-The following encoding is used for Data Rate (**DR**) and End-point Output Power (**TXPower**)  in the US902-928 band:
+2.2.3 US902-928 Data Rate and End-device Output Power encoding 
+FCC regulation imposes a maximum dwell time of 400ms on uplinks. The ***TxParamSetupReq*** is not implemented by US902-928 devices.
+The following encoding is used for Data Rate (**DR**) and End-device conducted Power (**TXPower**) in the US902-928 band:
 
 |**DataRate**|**Configuration**|**Indicative physical bit rate [bit/s]**|
 |---|---|---|
@@ -301,9 +303,11 @@ The following encoding is used for Data Rate (**DR**) and End-point Output Power
 |12|LoRa: SF8 / 500kHz|12500|
 |13|LoRa: SF7 / 500kHz|21900|
 |14:15|RFU|
-**Table 9 TX Data rate table**
+**Table 11 TX Data rate table**
 
-|**TXPower**|**Configuration**|
+> Note: DR4 is purposely identical to DR12, DR8..13 must be implemented in end-devices and are reserved for future applications
+
+|**TXPower**|**Configuration (conducted power)**|
 |---|---|
 |0|30 dBm - 2*TXpower|
 |1|28dBm|
@@ -311,7 +315,7 @@ The following encoding is used for Data Rate (**DR**) and End-point Output Power
 |3:9|...|
 |10|10dBm|
 |11:16|RFU|
-**Table 10: TX power table**
+**Table 12: TX power table**
 
 #### 2.2.4 US902-928 JoinAccept CFList
 
@@ -331,11 +335,11 @@ For the US902-928 version the **ChMaskCntl** field of the ***LinkADRReq*** comma
 |6|All 125 kHz ON ChMask applies to channels 65 to 72|
 |7|All 125 kHz OFF ChMask applies to channels 65 to 72|
 
-**Table 11: ChMaskCntl value table**
+**Table 13: ChMaskCntl value table**
 
 If ***ChMaskCntl*** = 6 then 125 kHz channels are enabled, if ***ChMaskCntl*** = 7 then 125 kHz channels are disabled. Simultaneously the channels 64 to 71 are set according to the ***ChMask*** bit mask. The DataRate specified in the command need not be valid for channels specified in the ChMask, as it governs the global operational state of the end-device.
 
-**Note:** FCC regulation requires hopping over at least 50 channels when  using maximum output power. It is possible to have end-devices with less channels (at least six 125 kHz channels) when limiting the end-device transmit power to 21 dBm.
+**Note**: FCC regulation requires hopping over at least 50 channels when using maximum output power. It is possible to have end-devices with less channels when limiting the end-device conducted transmit power to 21 dBm.
 
 **Note**: A common network server action may be to reconfigure a device through multiple LinkAdrReq commands in a contiguous block of MAC Commands.  For example to reconfigure a device from 64 channel operation to the first 8 channels could contain two LinkAdrReq, the first (ChMaskCntl = 7) to disable all 125kHz channels and the second (ChMaskCntrl = 0) to enable a bank of 8 125kHz channels.
 
@@ -359,7 +363,7 @@ The maximum **MACPayload** size length (*M*) is given by the following table. It
 |13|230|222|
 |14:15|Not defined|Not defined|
 
-**Table 12: US902-928 maximum payload size (repeater compatible)**
+**Table 14: US902-928 maximum payload size (repeater compatible)**
 
 The greyed lines correspond to the data rates that may be used by an end-device behind a  repeater.
 
@@ -381,13 +385,13 @@ If the end-device will never operate under a repeater then the maximum applicati
 |13|250|242|
 |14:15|Not defined|Not defined|
 
-**Table 13 : US902-928 maximum payload size (not repeater compatible)**
+**Table 15 : US902-928 maximum payload size (not repeater compatible)**
 
 #### 2.2.7 US902-928 Receive windows
 
 - The RX1 receive channel is a function of the upstream channel used to initiate the data exchange. The RX1 receive channel can be    determined as follows.
   - RX1 Channel Number = Transmit Channel Number modulo 8|
-- The RX1 window data rate depends on the transmit data rate (see    Table 24 below).
+- The RX1 window data rate depends on the transmit data rate (see    Table 16 below).
 - The RX2 (second receive window) settings uses a fixed data rate and    frequency. Default parameters are 923.3Mhz / DR8
 
 |**Upstream data rate**|**Downstream data rate**|**Downstream data rate**|**Downstream data rate**|**Downstream data rate**|
@@ -405,11 +409,45 @@ If the end-device will never operate under a repeater then the maximum applicati
 |DR12|DR12|DR11|DR10|DR9|
 |DR13|DR13|DR12|DR11|DR10|
 
-**Table 14: Data rate mapping**
+**Table 16: US902-928 downlink RX1 Data rate mapping**
 
 The allowed values for RX1DROffset are in the \[0:3\] range. Values in the range \[4:7\] are reserved for future use.
+#### 2.2.8 US902-928 Class B beacon
 
-#### 2.2.8 US902-928 Default Settings
+The beacons are transmitted using the following settings
+
+|DR|8|Corresponds to SF12 spreading factor with 500 kHz bw|
+|---|---|---|
+|CR|1|Colding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+|frequencies|923.3 to 927.5MHZ with 600kHz steps|Beaconing is performed on the same channel that normal downstream traffic as defined in the Class A specification
+**Table 17: EU863-870 beacon settings**
+
+The downstream channel used for a given beacon is:
+Channel = [*floor*(*beacon_time*/*beacon_period*)] *modulo* 8
+
+- whereby beacon_time is the integer value of the 4 bytes “Time” field of the beacon frame
+- whereby beacon_period is the periodicity of beacons, 128 seconds whereby *floor(x)* designates rounding to the integer immediately inferior or equal to x
+
+> Example: the first beacon will be transmitted on 923.3Mhz , the second 503 on 923.9MHz, the 9<sup>th</sup> beacon will be on 923.3Mhz again.
+
+|Beacon channel nb|Frequency [MHz]|
+|---|---|
+|0|923.3|
+|1|923.9|
+|2|924.5|
+|3|925.1|
+|4|925.7|
+|5|926.3|
+|6|926.9|
+|7|926.5|
+
+The beacon frame content is:
+|**Size (bytes)**|**5**|4|2|7|**3**|2|
+|---|---|---|---|---|---|---|
+|**BCNPayload**|**RFU**|Time|CRC|GwSpecific|**RFU**|CRC|
+
+#### 2.2.9 US902-928 Default Settings
 
 The following parameters are recommended values for the US902-928 band.
 
@@ -437,11 +475,11 @@ The following synchronization words should be used :
 |**LORA**|0x34|8 symbols|
 |**GFSK**|0xC194C1|5 bytes|
 
-**Table 15: CN779-787 synch words**
+**Table 18: CN779-787 synch words**
 
 ##### 2.3.2 CN779-787 ISM Band channel frequencies
 
-The LoRaWAN can be used in the Chinese 779-787MHz band as long as the radio device ERP is less than 10mW (or 10dBm).
+The LoRaWAN can be used in the Chinese 779-787MHz band as long as the radio device EIRP is less than 12.15dBm.
 
 The end-device transmit duty-cycle should be lower than 1%.
 
@@ -460,13 +498,13 @@ The following table gives the list of frequencies that should be used by end-dev
 |---|---|---|---|---|---|
 |LoRa|125|779.5<br/>779.7<br/>779.9<br/>780.5<br/>780.7<br/>780.9<br/>|DR0 to DR5 / 0.3-5 kbps|6|<0.1%|
 
-**Table 16: CN780 JoinReq Channel List**
+**Table 19: CN780 JoinReq Channel List**
 
 #### 2.3.3 CN779-787 Data Rate and End-device Output Power encoding
 
-There is no dwell time limitation for the CN779-787 PHY layer. The ***TxParamSetupReq*** MAC command does not have to be implemented by CN779-787 devices.
+There is no dwell time limitation for the CN779-787 PHY layer. The ***TxParamSetupReq*** MAC command is not implemented by CN779-787 devices.
 
-The following encoding is used for Data Rate (DR) and End-device Output Power (TXPower)  in the CN780 band:
+The following encoding is used for Data Rate (DR) and End-device EIRP (TXPower)  in the CN780 band:
 
 |**DataRate**|**Configuration**|**Indicative physical bit rate [bit/s]**|
 |---|---|---|
@@ -476,31 +514,37 @@ The following encoding is used for Data Rate (DR) and End-device Output Power (T
 |3|LoRa: SF9 / 125kHz|1760|
 |4|LoRa: SF8 / 125kHz|3125|
 |5|LoRa: SF7 / 125kHz|5470|
-|6|LoRa: SF7 / 250kHz|10000|
+|6|LoRa: SF7 / 250kHz|11000|
 |7|LoRa: FSK: 50 kbps|50000|
 |8..15|RFU|
 
 |**TXPower**|**Configuration**|
 |---|---|
-|0|10 dBm|
-|1|7 dBm|
-|2|4 dBm|
-|3|1 dBm|
-|4|-2 dBm|
-|5|-5 dBm|
+|0|MaxEIRP|
+|1|MaxEIRP-2dB|
+|2|MaxEIRP-4dB|
+|3|MaxEIRP-6dB|
+|4|MaxEIRP-8dB|
+|5|MaxEIRP-10dB|
 |6..15|RFU|
 
-**Table 17: Data rate and TX power table**
+**Table 20: Data rate and TX power table**
+
+EIRP refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi.
+
+By default MAxEIRP is considered to be +12.15dBm. If the end-device cannot achieve 12.15dBm EIRP, the Max EIRP should be communicated to the network server using an out-of-band channel during the end-device commissioning process.
 
 #### 2.3.4 CN779-787 JoinAccept CFList
 
-The CN780 ISM band LoRaWAN implements an optional **channel frequency list** (CFlist) of  16 octets in the JoinAccept message. In this case the CFList is a list of five channel frequencies for the channels four to eight whereby each frequency is encoded as a 24 bits unsigned integer (three octets). All these  channels are usable for DR0 to DR5 125kHz LoRa modulation. The list of frequencies is followed by a single RFU octet for a total of 16 octets.
+The CN780 ISM band LoRaWAN implements an optional **channel frequency list** (CFlist) of  16 octets in the JoinAccept message.
+
+In this case the CFList is a list of five channel frequencies for the channels four to eight whereby each frequency is encoded as a 24 bits unsigned integer (three octets). All these  channels are usable for DR0 to DR5 125kHz LoRa modulation. The list of frequencies is followed by a single RFU octet for a total of 16 octets.
 
 |**Size (bytes)**|3|3|3|3|3|1|
 |---|---|---|---|---|---|---|
 |**CFList**|Freq Ch4|Freq Ch5|Freq Ch6|Freq Ch7|Freq Ch8|RFU|
 
-The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 Mhz are reserved for future use. This allows setting the frequency of a channel anywhere between 100 MHz to 1.67 GHz in 100 Hz steps. Unused channels have a frequency value of 0. The **CFList** is optional and its presence can be detected by the length of the join-accept message. If present, the **CFList** replaces all the previous channels stored in the end-device apart from the three default channels as defined in Chapter 6.
+The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 Mhz are reserved for future use. This allows setting the frequency of a channel anywhere between 100 MHz to 1.67 GHz in 100 Hz steps. Unused channels have a frequency value of 0. The **CFList** is optional and its presence can be detected by the length of the join-accept message. If present, the **CFList** replaces all the previous channels stored in the end-device apart from the three default channels.
 
 The newly defined channels are immediately enabled and usable by the end-device for communication.
 
@@ -518,7 +562,7 @@ The CN780 LoRaWAN only supports a maximum of 16 channels. When **ChMaskCntl** fi
 |6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
 |7|RFU|
 
-**Table 18: ChMaskCntl value table**
+**Table 21: ChMaskCntl value table**
 
 If the ChMask field value is one of values meaning RFU, then end-device should reject the command and unset the "**Channel mask ACK**" bit in its response.
 
@@ -538,7 +582,7 @@ The maximum **MACPayload** size length (*M*) is given by the following table. It
 |7|230|222  |
 |8:15|Not defined|Not defined|
 
-**Table 19: CN780 maximum payload size**
+**Table 22: CN780 maximum payload size**
 
 If the end-device will never operate with a repeater then the maximum application payload  length in the absence of the optional **FOpt** control field should be:
 
@@ -553,7 +597,7 @@ If the end-device will never operate with a repeater then the maximum applicatio
 |6|250|242|
 |7|250|242|
 |8:15|Not defined|Not defined|
-**Table 20 : CN780 maximum payload size (not repeater compatible)**
+**Table 23 : CN780 maximum payload size (not repeater compatible)**
 
 #### 2.3.7 CN779-787 Receive windows
 
@@ -570,10 +614,31 @@ The RX1 receive window uses the same channel than the preceding uplink. The data
 |DR5|DR5|DR4|DR3|DR2|DR1|DR0|
 |DR6|DR6|DR5|DR4|DR3|DR2|DR1|
 |DR7|DR7|DR6|DR5|DR4|DR3|DR2|
+**Table 24: CN780 downlink RX1 data rate mapping**
 
 The RX2 receive window uses a fixed frequency and data rate. The default parameters are 786 MHz / DR0.
 
-#### 2.3.8 CN779-787 Default Settings
+#### 2.3.8 CN779-787 Class B beacon and default downlink channel
+
+The beacons SHALL be transmitted using the following settings
+
+|DR|3|Corresponds to SF9 spreading factor with 125 kHz BW|
+|---|---|---|
+|CR|1|Coding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+**Table 25: CN780 beacon settings**
+
+The beacon frame content is:
+
+Size (bytes)|2|4|2|7|2|
+|---|---|---|---|---|---|
+BCNPayload|RFU|Time|CRC|GwSpecific|CRC|
+
+The beacon default broadcast frequency is 785MHz.
+
+The class B default downlink pingSlot frequency is 785MHz
+
+#### 2.3.9 CN779-787 Default Settings
 
 The following parameters are recommended values for the CN779-787MHz band.
 
