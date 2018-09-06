@@ -630,9 +630,9 @@ The beacons SHALL be transmitted using the following settings
 
 The beacon frame content is:
 
-Size (bytes)|2|4|2|7|2|
+|Size (bytes)|2|4|2|7|2|
 |---|---|---|---|---|---|
-BCNPayload|RFU|Time|CRC|GwSpecific|CRC|
+|BCNPayload|RFU|Time|CRC|GwSpecific|CRC|
 
 The beacon default broadcast frequency is 785MHz.
 
@@ -1089,12 +1089,8 @@ AU ISM band end-devices should use the following default parameters:
 
 The LoRaWAN can be used in the Chinese 470-510MHz band as long as
 
-- The radio device EIRP is less than 50mW (or 17dBm).
+- The radio device EIRP is less than 19.15dBm
 - The transmission never lasts more than 5000 ms.
-
-CN470 MHz band end-devices should use the following default parameters:
-
-- Default radiated transmits output power: 14 dBm.
 
 CN470-510 end-devices should be capable of operating in the 470 to 510 MHz frequency band and should feature a channel data structure to store the parameters of 96 uplink channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
 
@@ -1103,9 +1099,9 @@ Personalized devices shall have all 96 channels enabled following a reset.
 
 #### 2.6.3 CN470-510 Data Rate and End-point Output Power encoding
 
-There is no dwell time limitation for the CN470-510 PHY layer. The ***TxParamSetupReq*** MAC command does not have to be implemented by CN470-510 devices.
+There is no dwell time limitation for the CN470-510 PHY layer. The ***TxParamSetupReq*** MAC command is not implemented by CN470-510 devices.
 
-The following encoding is used for Data Rate (**DR**) and End-point Output Power (**TXPower**) in the Cn470-510 band:
+The following encoding is used for Data Rate (**DR**) and End-point EIRP (**TXPower**) in the Cn470-510 band:
 
 |DataRate|Configuration|Indicative physical bit rate [bit/sec]|
 |---|---|---|
@@ -1117,27 +1113,29 @@ The following encoding is used for Data Rate (**DR**) and End-point Output Power
 |5|LoRa: SF7 / 125 kHz|5470|
 |6:15|RFU||
 
-**Table 34: CN470 Data rate table**
+**Table 41: CN470 Data rate table**
 
 |TXPower|Configuration|
 |---|---|
-|0|17 dBm|
-|1|16 dBm|
-|2|14 dBm|
-|3|12 dBm|
-|4|10 dBm|
-|5|7 dBm|
-|6|5 dBm|
-|7|2 dBm|
+|0|MaxEIRP|
+|1|MaxEIRP - 2 dB|
+|2|MaxEIRP - 4 dB|
+|3|MaxEIRP - 6 dB|
+|4|MaxEIRP - 8 dB|
+|5|MaxEIRP - 10 dB|
+|6|MaxEIRP - 12 dB|
+|7|MaxEIRP - 14 dB|
 |8...15|RFU|
 
-**Table 34 : CN470 TX power table**
+**Table 41 : CN470 TX power table**
 
-DR4 is identical to DR12, DR8...13 must be implemented in end-devices and are reserved for future applications.
+EIRP refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi.
+
+By default MaxEIRP is considered to be +19.15dBm. If the end-device cannot achieve 19.15dBm EIRP, the Max EIRP should be communicated to the network server using an out of-band channel during the end-device commissioning process.
 
 #### 2.6.4 CN470-510 JoinResp CFList
 
-The CN470-510 LoRaWAN does not support the use of the optional **CFlist** appended to the 13 JoinAccept message. If the CFlist is not empty it is ignored by the end-device.
+The CN470-510 LoRaWAN does not support the use of the optional **CFlist** appended to the JoinAccept message. If the CFlist is not empty it is ignored by the end-device.
 
 #### 2.6.5 CN470-510 LinkAdrReq command
 
@@ -1154,7 +1152,7 @@ For the CN470-510 version the ChMaskCntl field of the LinkADRReq command has the
 |6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
 |7|RFU|
 
-**Table 35: CN470 ChMaskCntl value table**
+**Table 42: CN470 ChMaskCntl value table**
 
 If the ChMask field value is one of the values meaning RFU, then end-device should reject the command and unset the **Channel mask ACK** bit in its response.
 
@@ -1172,13 +1170,27 @@ The maximum **MACPayload** size length (M) is given by the following table. It i
 |5|230|222|
 |6:15|Not defined|Not defined|
 
-**Table 36: CN470-510 maximum payload size**
+**Table 43: CN470-510 maximum payload size**
+
+If the end-device will never operate with a repeater then the maximum application payload length in the absence of the optional **FOpt** control field should be:
+
+|DataRate|M|N|
+|---|---|---|
+|0|59|51|
+|1|59|51|
+|2|59|51|
+|3|123|115|
+|4|250|242|
+|5|250|242|
+|6:15|Not defined|Not defined|
+
+**Table 44: CN470-510 maximum payload size (not repeater compatible)**
 
 #### 2.6.7 CN470-510 Receive windows
 
 - The RX1 receive channel is a function of the upstream channel used to initiate the data exchange. The RX1 receive channel can be determined as follows.
   - RX1 Channel Number = Uplink Channel Number modulo 48, for example, when transmitting channel number is 49, the rx1 channel number is 1.
-- The RX1 window data rate depends on the transmit data rate (see Table Table 37: CN470-510 Data rate offset below).
+- The RX1 window data rate depends on the transmit data rate (see Table below).
 - The RX2 (second receive window) settings uses a fixed data rate and frequency. Default parameters are 505.3 MHz / DR0
 
 |Upstream data rate|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|Downstream data rate in RX1 slot|
@@ -1190,11 +1202,49 @@ The maximum **MACPayload** size length (M) is given by the following table. It i
 |DR3|DR3|DR2|DR1|DR0|DR0|DR0|
 |DR4|DR4|DR3|DR2|DR1|DR0|DR0|
 |DR5|DR5|DR4|DR3|DR2|DR1|DR0|
-**Table 37: CN470-510 Data rate offset**
+**Table 45: CN470-510 downlink RX1 data rate mapping**
 
-The allowed values for RX1DROffset are in the [0:3] range. Values in the range [4:7] are reserved for future use.
+The allowed values for RX1DROffset are in the [0:5] range. Values in the range [6:7] are reserved for future use.
 
-#### 2.6.8 CN470-510 Default Settings
+#### 2.6.8 CN470-510 Class B beacon
+
+The beacons are transmitted using the following settings:
+
+|DR|2|Corresponds to SF10 spreading factor with 125kHz bw|
+|---|---|---|
+|CR|1|Coding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+|frequencies|508.3 to 509.7MHz with 200kHz steps||
+**Table 46 : CN470-510 beacon settings**
+
+The downstream channel used for a given beacon is:
+
+BeaconChannel = [*floor* ( *beacon_time* / *beacon_period* )] *modulo* 8
+
+- whereby beacon_time is the integer value of the 4 bytes “Time” field of the beacon frame
+- whereby beacon_period is the periodicity of beacons , 128 seconds
+- whereby floor(x) designates rounding to the integer immediately inferior or equal to x
+
+> Example: the first beacon will be transmitted on 508.3Mhz, the second on 508.5MHz, the 9th beacon will be on 508.3Mhz again.
+
+|Beacon channel nb|Frequency [MHz]|
+|---|---|
+|0|508.3|
+|1|508.5|
+|2|508.7|
+|3|508.9|
+|4|509.1|
+|5|509.3|
+|6|509.5|
+|7|509.7|
+
+The beacon frame content is:
+
+|Size (bytes)|3|4|2|7|1|2|
+|---|---|---|---|---|---|---|
+|BCNPayload|RFU|Time|CRC|GwSpecific|RFU|CRC|
+
+#### 2.6.9 CN470-510 Default Settings
 
 The following parameters are recommended values for the CN470-510 band.
 |Variable name|Variable value|
@@ -1221,7 +1271,7 @@ The following synchronization words should be used:
 |LORA|0x34|8 symbols|
 |GFSK|0xC194C1|5 bytes|
 
-**Table 38: AS923 synch words**
+**Table 47: AS923 synch words**
 
 #### 2.7.2 AS923 ISM Band channel frequencies
 
@@ -1244,13 +1294,13 @@ The network channels can be freely attributed by the network operator. However t
 |Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|Duty cycle|
 |---|---|---|---|---|---|
 |LoRa|125|923.20<br/>923.40|DR0 to DR5  / 0.3-5 kbps|2|< 1%|
-**Table 39: AS923 default channels**
+**Table 48: AS923 default channels**
 
 Those default channels must be implemented in every end-device and cannot be modified through the NewChannelReq command and guarantee a minimal common channel set between end-devices and network gateways.
 
 AS923MHz ISM band end-devices should use the following default parameters
 
-- Default ERP: 14 dBm
+- Default ERP: 16 dBm
 
 AS923MHz end-devices should feature a channel data structure to store the parameters of at least 16 channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
 
@@ -1259,11 +1309,13 @@ The following table gives the list of frequencies that should be used by end-dev
 |Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|Duty cycle|
 |---|---|---|---|---|---|
 |LoRa|125|923.2<br/>923.40|DR2|2|< 1%|
-**Table 40: AS923 JoinReq Channel List**
+**Table 49: AS923 JoinReq Channel List**
 
 The default JoinReq Data Rate is DR2 (SF10/125KHz), this setting ensures that end-devices are compatible with the 400ms dwell time limitation until the actual dwell time limit is notified to the end-device by the network server via the MAC command "TxParamSetupReq". The JoinReq message transmit duty-cycle shall follow the rules described in chapter "Retransmissions back-off" of the LoRaWAN specification document.
 
 #### 2.7.3 AS923 Data Rate and End-point Output Power encoding
+
+The "TxParamSetupReq/Ans" MAC command MUST be implemented by the AS923 devices.
 
 The following encoding is used for Data Rate (DR) in the AS923 band:
 
@@ -1278,20 +1330,26 @@ The following encoding is used for Data Rate (DR) in the AS923 band:
 |6|LoRa: SF7 / 250 kHz|11000|
 |7|FSK: 50 kbps|50000|
 |8..15|RFU|
-**Table 41: Data rate table**
+**Table 50: Data rate table**
 
 The TXPower table indicates power levels relative to the Max ERP level of the end-device, as per the following table:
 
 |TXPower|Configuration|
 |---|---|
-|0|Max ERP|
-|1|Max ERP – 2dB|
-|2|Max ERP – 4dB|
-|3|Max ERP – 6dB|
-|4|Max ERP – 8dB|
-|5|Max ERP – 10dB|
-|6..15|RFU|
-**Table 42: TxPower table**
+|0|Max EIRP|
+|1|Max EIRP – 2dB|
+|2|Max EIRP – 4dB|
+|3|Max EIRP – 6dB|
+|4|Max EIRP – 8dB|
+|5|Max EIRP – 10dB|
+|6|Max EIRP – 12dB|
+|7|Max EIRP – 14dB|
+|8..15|RFU|
+**Table 51: TxPower table**
+
+EIRP refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi.  
+
+By default Max EIRP shall be 16dBm.The Max EIRP can be modified by the network server through the ***TxParamSetupReq***  MAC command and should be used by both the end device and the network server once ***TxParamSetupReq*** is acknowledged by the device via ***TxParamSetupAns***.
 
 #### 2.7.4 AS923 JoinAccept CFList
 
@@ -1303,7 +1361,7 @@ In this case the CFList is a list of five channel frequencies for the channels t
 |---|---|---|---|---|---|---|---|
 CFList|Freq Ch3|Freq Ch4|Freq Ch5|Freq Ch6|Freq Ch7|RFU|
 
-The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 MHz are reserved for future use. This allows setting the frequency of a channel anywhere between 915 and 928MHz in 100 Hz steps. Unused channels have a frequency value of 0. The CFList is optional and its presence can be detected by the length of the join-accept message. If present, the CFList replaces all the previous channels stored in the end-device apart from the two default channels as defined in Chapter 1.7.2. The newly defined channels are immediately enabled and usable by the end-device for communication.
+The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 MHz are reserved for future use. This allows setting the frequency of a channel anywhere between 915 and 928MHz in 100 Hz steps. Unused channels have a frequency value of 0. The CFList is optional and its presence can be detected by the length of the join-accept message. If present, the CFList replaces all the previous channels stored in the end-device apart from the two default channels. The newly defined channels are immediately enabled and usable by the end-device for communication.
 
 #### 2.7.5 AS923 LinkAdrReq command
 
@@ -1319,7 +1377,7 @@ The AS923 LoRaWAN only supports a maximum of 16 channels. When ChMaskCntl field 
 |6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
 |7|RFU|
 
-**Table 43: ChMaskCntl value table**
+**Table 52: ChMaskCntl value table**
 If the ChMask field value is one of values meaning RFU, the end-device should reject the command and unset the “Channel mask ACK” bit in its response.
 
 #### 2.7.6 AS923 Maximum payload size
@@ -1333,13 +1391,13 @@ The maximum MACPayload size length *(M)* is given by the following table for bot
 |1|59|N/A|59|N/A|
 |2|59|19|59|19|
 |3|123|61|123|61|
-|4||230|133|230|134|
+|4||230|133|230|133|
 |5|230|250|230|250|
 |6|230|250|230|250|
 |7|230|250|230|250|
 |8:15|RFU|RFU|
 
-**Table 44: AS923 maximum payload size**
+**Table 53: AS923 maximum payload size**
 
 If the end-device will never operate with a repeater then the maximum MAC payload length should be:
 
@@ -1350,13 +1408,13 @@ If the end-device will never operate with a repeater then the maximum MAC payloa
 |1|59|N/A|59|N/A|
 |2|59|19|59|19|
 |3|123|61|123|61|
-|4|250|133|250|134|
+|4|250|133|250|133|
 |5|250|250|250|250|
 |6|250|250|250|250|
 |7|250|250|250|250|
 |8:15|RFU|RFU|RFU|RFU|
 
-**Table 45: AS923 maximum payload size (not repeater compatible)**
+**Table 54: AS923 maximum payload size (not repeater compatible)**
 
 The maximum application payload length in the absence of the optional FOpt control field *(N)* is eight bytes lower than the MACPayload value in the above table. The value of N might be smaller if the FOpt field is not empty.
 
@@ -1380,7 +1438,26 @@ The allowed values for RX1DROffset are in the [0:7] range, encoded as per the be
 Values in the [6:7] range allow setting the Downstream RX1 data rate higher than Upstream data rate.
 The RX2 receive window uses a fixed frequency and data rate. The default parameters are 923.2 MHz / DR2 (SF10/125KHz).
 
-#### 2.7.8 AS923 Default Settings
+#### 2.7.8 AS923 Class B beacon and default downlink channel
+
+The beacons SHALL be transmitted using the following settings
+
+|DR|3|Corresponds to SF9 spreading factor with 125 kHz BW|
+|---|---|---|
+|CR|1|Coding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+**Table 55 : AS923 beacon settings**
+
+The beacon frame content is:
+
+|Size (bytes)|2|4|2|7|2|
+|---|---|---|---|---|---|
+|BCNPayload|RFU|Time|CRC|GwSpecific|CRC|
+The beacon default broadcast frequency is 923.4MHz.
+
+The class B default downlink pingSlot frequency is 923.4MHz
+
+#### 2.7.9 AS923 Default Settings
 
 The following parameters are recommended values for the AS923MHz band.
 
@@ -1407,8 +1484,6 @@ The following synchronization words should be used:
 |---|---|---|
 |LORA|0x34|8 symbols|
 
-**Table 46 :KR920-923 synch words**
-
 #### 2.8.2 KR920-923 ISM Band channel frequencies
 
 The center frequency, bandwidth and maximum EIRP output power for the South Korea RFID/USN frequency band are already defined by Korean Government. Basically Korean Government allocated LPWA based IoT network frequency band from 920.9 to 923.3MHz.
@@ -1429,14 +1504,14 @@ The center frequency, bandwidth and maximum EIRP output power for the South Kore
 |922.9|125|14|23|
 |923.1|125|14|23|
 |923.3|125|14|23|
-**Table 47: Center frequency, bandwidth, maximum EIRP output power table**
+**Table 56: Center frequency, bandwidth, maximum EIRP output power table**
 
 The three following default channels (922.1, 922.3 and 922.5MHz / DR0 to DR5) determined by the network operator from the set of available channels as defined by the South Korean regulation must be implemented in every KR920-923MHz end-device, and cannot be alterable by the NewChannelReq command. Those channels are the minimum set that all network gateways should always be listening on to guarantee a minimal common channel set between end-devices and network gateways.
 
 |Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|
 |---|---|---|---|---|
 |LoRa|125|922.10<br/>922.30<br/>922.50|DR0 to DR5 / 0.3-5 kbps|3|
-**Table 48: KR920-923 default channels**
+**Table 57: KR920-923 default channels**
 
 In order to access the physical medium the South Korea regulations impose some restrictions. The South Korea regulations allow the choice of using either a duty-cycle limitation or a so-called Listen Before Talk Adaptive Frequency Agility (LBT AFA) transmissions management. The current LoRaWAN specification for the KR920-923 ISM band exclusively uses LBT channel access rule to maximize MACPayload size length and comply with the South Korea regulations.
 
@@ -1453,13 +1528,13 @@ The following table gives the list of frequencies that should be used by end-dev
 |Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|
 |---|---|---|---|---|
 |LoRa|125|922.10<br/>922.30<br/>922.50|DR0 to DR5 / 0.3-5 kbps|3|
-**Table 49: KR920-923 JoinReq Channel List**
+**Table 58: KR920-923 JoinReq Channel List**
 
 #### 2.8.3 KR920-923 Data Rate and End-device Output Power encoding
 
-There is no dwell time limitation for the KR920-923 PHY layer. The TxParamSetupReq MAC command does not have to be implemented by the KR920-923 devices.
+There is no dwell time limitation for the KR920-923 PHY layer. The TxParamSetupReq MAC command is not implemented in KR920-923 devices.
 
-The following encoding is used for Data Rate (DR), corresponding Configurations and maximum EIRP Output Power (TXPower) in the KR920-923 band:
+The following encoding is used for Data Rate (DR), and EIRP Output Power (TXPower) in the KR920-923 band:
 
 |DataRate|Configuration|Indicative physical bit rate [bit/s]|
 |---|---|---|
@@ -1470,19 +1545,26 @@ The following encoding is used for Data Rate (DR), corresponding Configurations 
 |4|LoRa: SF8 / 125 kHz|3125|
 |5|LoRa: SF7 / 125 kHz|5470|
 |6..15|RFU||
-**Table 50: TX Data rate table**
+**Table 59: TX Data rate table**
 
 |TXPower|Configuration, max EIRP allowed|
 |---|---|
-|0|20 dBm|
-|1|14 dBm|
-|2|10 dBm|
-|3|8 dBm|
-|4|5 dBm|
-|5|2 dBm|
-|6|0 dBm|
-|7..15|RFU|
-**Table 51: TX power table**
+|0|MaxEIRP - |
+|1|MaxEIRP - 2 dBm|
+|2|MaxEIRP - 4 dBm|
+|3|MaxEIRP - 6 dBm|
+|4|MaxEIRP - 8 dBm|
+|5|MaxEIRP - 10 dBm|
+|6|MaxEIRP - 12 dBm|
+|7|MaxEIRP - 14 dBm|
+|8..15|RFU|
+**Table 60: TX power table**
+
+EIRP refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi.  
+
+By default MaxEIRP is considered to be +14dBm. If the end-device cannot achieve 14dBm EIRP, the MaxEIRP should be communicated to the network server using an out-of-band channel during the end-device commissioning process.  
+When the device transmits in a channel whose frequency is <922MHz, the transmit power SHALL be limited to +10dBm EIRP even if the current transmit power level set by the network server is higher.  
+
 
 #### 2.8.4 KR920-923 JoinAccept CFList
 
@@ -1493,7 +1575,7 @@ In this case the CFList is a list of five channel frequencies for the channels f
 |**Size (bytes)**|3|3|3|3|3|1|
 |---|---|---|---|---|---|---|
 |CFList|Freq Ch4|Freq Ch5|Freq Ch6|Freq Ch7|Freq Ch8|RFU|
-The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 MHz are reserved for future use. This allows setting the frequency of a channel anywhere between 100 MHz to 1.67 GHz in 100 Hz steps. Unused channels have a frequency value of 0. The **CFList** is optional and its presence can be detected by the length of the join-accept message. If present, the **CFList** replaces all the previous channels stored in the end-device apart from the three default channels as defined in Chapter 8.7.2. The newly defined channels are immediately enabled and usable by the end-device for communication.
+The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 MHz are reserved for future use. This allows setting the frequency of a channel anywhere between 100 MHz to 1.67 GHz in 100 Hz steps. Unused channels have a frequency value of 0. The **CFList** is optional and its presence can be detected by the length of the join-accept message. If present, the **CFList** replaces all the previous channels stored in the end-device apart from the three default channels. The newly defined channels are immediately enabled and usable by the end-device for communication.
 
 #### 2.8.5 KR920-923 LinkAdrReq command
 
@@ -1508,7 +1590,7 @@ ChMaskCntl|ChMask applies to|
 |5|RFU|
 |6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
 |7|RFU|
-**Table 52: ChMaskCntl value table**
+**Table 61: ChMaskCntl value table**
 
 If the ChMaskCntl field value is one of values meaning RFU, the end-device should reject the command and unset the "**Channel mask ACK**" bit in its response.
 
@@ -1518,14 +1600,27 @@ The maximum **MACPayload** size length *(M)* is given by the following table for
 
 |DataRate|M|N|
 |---|---|---|
-|0|73|65|
-|1|159|151|
-|2|250|242|
-|3|250|242|
+|0|59|51|
+|1|59|51|
+|2|59|51|
+|3|123|115|
+|4|230|222|
+|5|230|222|
+|6:15|Not defined|Not defined|
+**Table 62: KR920-923 maximum payload size**
+
+If the end-device will never operate with a repeater then the maximum application payload length in the absence of the optional **FOpt** control field should be:
+
+|DataRate|M|N|
+|---|---|---|
+|0|59|51|
+|1|59|51|
+|2|59|51|
+|3|123|115|
 |4|250|242|
 |5|250|242|
 |6:15|Not defined|Not defined|
-**Table 53: KR920-923 maximum payload size**
+**Table 63: KR920-923 maximum payload size (not repeater compatible)**
 
 #### 2.8.7 KR920-923 Receive windows
 
@@ -1540,34 +1635,251 @@ The RX1 receive window uses the same channel than the preceding uplink. The data
 |DR3|DR3|DR2|DR1|DR0|DR0|DR0|
 |DR4|DR4|DR3|DR2|DR1|DR0|DR0|
 |DR5|DR5|DR4|DR3|DR2|DR1|DR0|
+**Table 64 : KR920-923 downlink RX1 data rate mapping**
 
 The RX2 receive window uses a fixed frequency and data rate. The default parameters are 921.90MHz / DR0 (SF12, 125 kHz)
 
-#### 2.8.8 KR920-923 Default Settings
+#### 2.8.8 KR920-923 Class B beacon and default downlink channel
+
+The beacons SHALL be transmitted using the following settings
+
+|DR|3|Corresponds to SF9 spreading factor with 125 kHz BW|
+|---|---|---|
+|CR|1|Coding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+**Table 55 : AS923 beacon settings**
+
+The beacon frame content is:
+
+|Size (bytes)|2|4|2|7|2|
+|---|---|---|---|---|---|
+|BCNPayload|RFU|Time|CRC|GwSpecific|CRC|
+The beacon default broadcast frequency is 923.1MHz.
+
+The class B default downlink pingSlot frequency is 923.1MHz
+
+#### 2.8.9 KR920-923 Default Settings
 
 The following parameters are recommended values for the KR920-923Mhz band.
 
 |Variable name|Variable value|
 |---|---|
-RECEIVE_DELAY1 |1 s
-RECEIVE_DELAY2 |2 s (must be RECEIVE_DELAY1 + 1s)
-JOIN_ACCEPT_DELAY1|5 s
-JOIN_ACCEPT_DELAY2|6 s
-MAX_FCNT_GAP|16384
-ADR_ACK_LIMIT|64
-ADR_ACK_DELAY|32
-ACK_TIMEOUT|2 +/- 1 s (random delay between 1 and 3 seconds)
+|RECEIVE_DELAY1 |1 s|
+|RECEIVE_DELAY2 |2 s (must be RECEIVE_DELAY1 + 1s)|
+|JOIN_ACCEPT_DELAY1|5 s|
+|JOIN_ACCEPT_DELAY2|6 s|
+|MAX_FCNT_GAP|16384|
+|ADR_ACK_LIMIT|64|
+|ADR_ACK_DELAY|32|
+|ACK_TIMEOUT|2 +/- 1 s (random delay between 1 and 3 seconds)|
+
+If the actual parameter values implemented in the end-device are different from those default values (for example the end-device uses a longer RECEIVE_DELAY1 and RECEIVE_DELAY2 latency), those parameters must be communicated to the network server using an out-of-band channel during the end-device commissioning process. The network server may not accept parameters different from those default values.
+
+### 2.9 India 865-867 MHz ISM Band
+
+#### 2.9.1 INDIA 865-867 Preamble Format
+
+The following synchronization words should be used:
+|Modulation|Sync word|Preamble length|
+|---|---|---|
+|LORA|0x34|8 symbols|
+|GFSK|0xC194C1|5 bytes|
+**Table 66: India 865-867 synch words**
+
+#### 2.9.2 INDIA 865-867 ISM Band channel frequencies
+
+This section applies to the Indian sub-continent.
+
+The network channels can be freely attributed by the network operator. However the three 1262 following default channels must be implemented in every India 865-867MHz end-device. 1263 Those channels are the minimum set that all network gateways should always be listening on.
+
+|Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|
+|---|---|---|---|---|
+LoRa|125|865.0625<br/>865.4025<br/>865.985|DR0 to DR5  / 0.3-5 kbps|3|
+**Table 67: INDIA 865-867 default channels**
+
+End-devices should be capable of operating in the 865 to 867 MHz frequency band and should feature a channel data structure to store the parameters of at least 16 channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
+
+The first three channels correspond to 865.0625, 865.4025, and 865.985 MHz / DR0 to DR5 and must be implemented in every end-device. Those default channels cannot be modified through the NewChannelReq command and guarantee a minimal common channel set between end-devices and network gateways.
+
+The following table gives the list of frequencies that should be used by end-devices to broadcast the JoinReq message. The JoinReq message transmit duty-cycle shall follow the rules described in chapter “Retransmissions back-off” of the LoRaWAN specification document.
+
+|Modulation|Bandwidth [kHz]|Channel Frequency [MHz]|FSK Bitrate or LoRa DR / Bitrate|Nb Channels|
+|---|---|---|---|---|
+LoRa|125|865.0625<br/>865.4025<br/>865.9850|DR0 to DR5  / 0.3-5 kbps|3|
+**Table 68: INDIA 865-867 JoinReq Channel List**
+
+#### 2.9.3 INDIA 865-867 Data Rate and End-device Output Power Encoding
+
+There is no dwell time or duty-cycle limitation for the INDIA 865-867 PHY layer. The ***TxParamSetupReq*** MAC command is not implemented by INDIA 865-867 devices.
+
+The following encoding is used for Data Rate (DR) and End-device Output Power (TXPower) in the INDIA 865-867 band:
+
+|DataRate|Configuration|Indicative physical bit rate [bit/s]|
+|---|---|---|
+|0|LoRa: SF12 / 125 kHz|250|
+|1|LoRa: SF11 / 125 kHz|440|
+|2|LoRa: SF10 / 125 kHz|980|
+|3|LoRa: SF9 / 125 kHz|1760|
+|4|LoRa: SF8 / 125 kHz|3125|
+|5|LoRa: SF7 / 125 kHz|5470|
+|6|RFU|RFU|
+|7|FSK: 50 kbps|50000|
+|8..15|RFU|
+**Table 69: TX Data rate table**
+
+The TXPower table indicates power levels relative to the Max EIRP level of the end-device, as per the following table:
+
+|TXPower|Configuration (EIRP)|
+|---|---|
+|0|MaxEIRP|
+|1|MaxEIRP – 2dB|
+|2|MaxEIRP – 4dB|
+|3|MaxEIRP – 6dB|
+|4|MaxEIRP – 8dB|
+|5|MaxEIRP – 10dB|
+|6|MaxEIRP – 12dB|
+|7|MaxEIRP – 14dB|
+|8|MaxEIRP – 16dB|
+|9|MaxEIRP – 18dB|
+|10|MaxEIRP – 20dB|
+|11..15|RFU|
+**Table 70: TxPower table**
+
+EIRP refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi.
+
+By default MaxEIRP is considered to be 30dBm. If the end-device cannot achieve 30dBm EIRP, the Max EIRP should be communicated to the network server using an out-of-band channel during the end-device commissioning process.  
+
+#### 2.9.4 INDIA 865-867 JoinAccept CFList
+
+The India 865-867 ISM band LoRaWAN implements an optional channel frequency list (CFlist) of 16 octets in the JoinAccept  message.
+
+In this case the CFList is a list of five channel frequencies for the channels four to eight whereby each frequency is encoded as a 24 bits unsigned integer (three octets). All these channels are usable for DR0 to DR5 125kHz LoRa modulation. The list of frequencies is followed by a single RFU octet for a total of 16 octets.
+ 
+|**Size (bytes)**|3|3|3|3|3|1|
+|---|---|---|---|---|---|---|
+|CFList|Freq Ch4|Freq Ch5|Freq Ch6|Freq Ch7|Freq Ch8|RFU|
+
+The actual channel frequency in Hz is 100 x frequency whereby values representing frequencies below 100 MHz are reserved for future use. This allows setting the frequency of a channel anywhere between 100 MHz to 1.67 GHz in 100 Hz steps. Unused channels have a frequency value of 0. The **CFList** is optional and its presence can be detected by the length of the join-accept message. If present, the **CFList** replaces all the previous channels stored in the end-device apart from the three default channels. The newly defined channels are immediately enabled and usable by the end-device for communication.
+
+#### 2.9.5 INDIA 865-867 LinkAdrReq command
+
+The INDIA 865-867 LoRaWAN only supports a maximum of 16 channels. When **ChMaskCntl** field is 0 the ChMask field individually enables/disables each of the 16 channels.  
+ 
+ChMaskCntl|ChMask applies to|
+|---|---|
+|0|Channels 1 to 16|
+|1|RFU|
+|..|..|
+|4|RFU|
+|5|RFU|
+|6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
+|7|RFU|
+**Table 71: ChMaskCntl value table**
+
+If the ChMaskCntl field value is one of values meaning RFU, the end-device should reject the command and unset the "Channel mask ACK" bit in its response.
+
+2.9.6 INDIA 865-867 Maximum payload size 
+The maximum MACPayload size length (M) is given by the following table. It is derived from limitation of the PHY layer depending on the effective modulation rate used taking into account a possible repeater encapsulation layer. The maximum application payload length in the absence of the optional FOpt control field (N) is also given for information only. The value of N might be smaller if the FOpt field is not empty:
+
+|DataRate|M|N|
+|---|---|---|
+|0|59|51|
+|1|59|51|
+|2|59|51|
+|3|123|115|
+|4|230|222|
+|5|230|222|
+|6|230|222|
+|7|230|222|
+|8:15|Not defined|Not defined|
+**Table 72: INDIA 865-867 maximum payload size**
+
+If the end-device will never operate with a repeater then the maximum application payload length in the absence of the optional **FOpt** control field should be:
+
+|DataRate|M|N|
+|---|---|---|
+|0|59|51|
+|1|59|51|
+|2|59|51|
+|3|123|115|
+|4|250|242|
+|5|250|242|
+|6|250|242|
+|7|250|242|
+|8:15|Not defined|Not defined|
+**Table 73 : INDIA 865-867 maximum payload size (not repeater compatible)**
+
+#### 2.9.7 INDIA 865-867 Receive windows
+
+The RX1 receive window uses the same channel than the preceding uplink. The data rate is a function of the uplink data rate and the RX1DROffset as given by the following table. The allowed values for RX1DROffset are in the [0:7] range. Values in the [6:7] range allow setting the Downstream RX1 data rate higher than Upstream data rate.
+
+The allowed values for RX1DROffset are in the [0:7] range, encoded as per the below table:
+
+|RX1DROffset (Coded value)|0|1|2|3|4|5|6|7|
+|---|---|---|---|---|---|---|---|---|
+|Effective_RX1DROffset|0|1|2|3|4|5|-1|-2|
+
+Downstream data rate in RX1 slot = *MIN* (5, *MAX* (0, Upstream data rate –  Effective_RX1DROffset))
+
+The RX2 receive window uses a fixed frequency and data rate. The default parameters are 866.550 MHz / DR2 (SF10, 125 kHz).
+
+#### 2.9.8 INDIA 865-867 Class B beacon and default downlink channel
+
+The beacons are transmitted using the following settings
+
+|DR|4|Corresponds to SF8 spreading factor with 125 kHz BW|
+|---|---|---|
+|CR|1|Coding rate = 4/5|
+|Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
+
+The beacon frame content is:
+
+|Size (bytes)|2|4|2|7|3|2|
+|---|---|---|---|---|---|---|
+|BCNPayload|RFU|Time|CRC|GwSpecific|RFU|CRC|
+
+The beacon default broadcast frequency is 866.550MHz.
+
+The class B default downlink pingSlot frequency is 866.550MHz
+
+#### 2.9.9 INDIA 865-867 Default Settings
+
+The following parameters are recommended values for the INDIA 865-867MHz band.
+
+|Variable name|Variable value|
+|---|---|
+|RECEIVE_DELAY1 |1 s|
+|RECEIVE_DELAY2 |2 s (must be RECEIVE_DELAY1 + 1s)|
+|JOIN_ACCEPT_DELAY1|5 s|
+|JOIN_ACCEPT_DELAY2|6 s|
+|MAX_FCNT_GAP|16384|
+|ADR_ACK_LIMIT|64|
+|ADR_ACK_DELAY|32|
+|ACK_TIMEOUT|2 +/- 1 s (random delay between 1 and 3 seconds)|
 
 If the actual parameter values implemented in the end-device are different from those default values (for example the end-device uses a longer RECEIVE_DELAY1 and RECEIVE_DELAY2 latency), those parameters must be communicated to the network server using an out-of-band channel during the end-device commissioning process. The network server may not accept parameters different from those default values.
 
 ## 3 Revisions
 
-### 3.1 Revision 1.0
+### 3.1 Revision A
 
 - Initial revision, the regional parameters were extracted from the LoRaWANV1.0.1 and the Asia/PAC regional cluster definition was added
 - The ADR command for the US902-928 physical layer was amended to include ADR MAC command blocks
 - Added KR920-923 frequency band support
-- Modified EU868 PHY layer power limit from 14dBm EIRP to 14dBm ERP
+- Modified EU868 PHY layer power limit from 14dBm EIRP to 1dBm ERP
+
+### 3.2 Revision B
+
+- expressed all powers either as EIRP or as conducted power depending on regions
+- Modified SF of US900 classB beacon to SF12/500kHz
+- Added for each region whether TxParamSetupReq must be supported or not
+- Added India frequency plan
+- Added precision regarding FCC profiles that must be supported by US900 devices  Added missing table in 2.6.6
+- Specified that device must limit power to 10dBm EIRP at frequencies lower than 922MHz in KR920 2.8.4
+- Added signal polarity in india classB beacon definition
+- Corrected Missing field names in classB beacon of EU433
+- Update of the AU915 available data rates : SF12 and SF11 are now allowed
+- Update of INDIA865 available data rate and TX power definition
 
 ## 4 Bibliography
 
