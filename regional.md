@@ -1,6 +1,6 @@
-# **LoRaWAN™ 1.0.2 Regional Parameters**
+# **LoRaWAN™ 1.0.3 Regional Parameters**
 
-Copyright © (2017) LoRa Alliance, Inc. All rights reserved.
+Copyright © (2018) LoRa Alliance, Inc. All rights reserved.
 
 NOTICE OF USE AND DISCLOSURE
 ---
@@ -25,22 +25,299 @@ San Ramon, CA 94583
 
 The authors reserve the right to change
 
-LoRaWAN™ 1.0.2 Regional Parameters
+LoRaWAN™ 1.0.3 Regional Parameters
 
-This document is a companion document to the LoRaWAN 1.0.2 protocol Specification
+This document is a companion document to the LoRaWAN 1.0.3 protocol Specification
 
 **Authors**:  
-LoRa Alliance Technical committee
+LoRa Alliance Technical committee Regional Parameters Workgroup
 
-**Revision**: B  
-**Date**: 2017 Feb  
-**Status:** Final
-
-> **Important note:** This is a candidate specification for the LoRa™ Alliance protocol named LoRaWAN™.
+**Revision**: A  
+**Date**: 2018 January  
+**Status:** Released
 
 ## 1 Introduction
 
-This document describes the LoRaWAN™ regional parameters for different regulatory regions worldwide. This document is a companion document to the LoRaWAN 1.0.2 protocol specification [LORAWAN]. Separating the regional parameters from the protocol specification allows the addition of new regions to the former without impacting the latter document.
+This document describes the LoRaWAN™ regional parameters for different regulatory regions worldwide. This document is a companion document to the LoRaWAN 1.0.3 protocol specification [LORAWAN]. Separating the regional parameters from the protocol specification allows the addition of new regions to the former without impacting the latter document.
+
+It must be noted here that, regardless of the specifications provided, at no time is any LoRa equipment allowed to operate in a manner contrary to the prevailing local rules and regulations where it is expected to operate. It is the responsibility of the LoRa device to insure that compliant operation is maintained without any outside assistance from a LoRa network or any other mechanism.
+
+### 1.1 Conventions
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", “MAY", and  "OPTIONAL" in this document are to be interpreted as described in RFC 2119.  
+
+### 1.2 Quick cross reference table
+
+In order to support the identification of LoRaWAN channel plans for a given country, the table below provides a quick reference of suggested channel plans listed in priority order for each country.
+
+|Country name|Band / channels|Channel Plan|
+|---|---|---|
+|Afghanistan||None|
+|Albania|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Algeria|433.05 - 434.79 MHz|EU433|
+||870-876MHz|Other|
+||880-885MHz|Other|
+||915 - 921 MHz|Other|
+||925 - 926 MHz|Other|
+|Andorra|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Armenia|863 - 870 MHz|EU863-870|
+||433.05 - 434.79 MHz|EU433|
+|Argentina|902 - 928 MHz||
+|(915-928 MHz usable)|AU915-928, US902-928||
+|Austria|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Australia|915 - 928 MHz|AU915-928, AS923|
+|Azerbaijan|433.05 - 434.79 MHz|EU433|
+||863 - 868 MHz|Others|
+|Bahrain|862 - 870MHz|EU863-870|
+|Bangladesh|433.05 - 434.79 MHz|EU433|
+||818 - 824 MHz|Other|
+||863 - 869 MHz|EU863-870|
+||925.0 - 927.0 MHz|Other|
+|Belarus|433.05 - 434.79 MHz|EU433|
+||864.4 - 868.6 MHz|EU863-870|
+||869-869.2MHz|EU863-870|
+|Belgium|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Burma (Myanmar)|433 - 435 MHz|EU433|
+||866 - 869MHz|EU863-870|
+||919 - 923 MHz|Other|
+|Bolivia|915 - 930 MHz|AU915-928, AS923|
+|Bosnia and Herzegovina|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Botswana||None|
+|Brazil|902 - 907.5 MHz|Other|
+||915 - 928 MHz|AU915-928|
+||433 - 435 MHz|EU433|
+|Brunei Darussalam|866 - 870 MHz|EU863-870|
+||920 - 925 MHz|AS923|
+||433 - 435 MHz|EU433|
+|Bulgaria|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Cambodia|866 - 869 MHz|EU863-870|
+||923 - 925 MHz|AS923|
+|Cameroon||None|
+|Canada|902 - 928 MHz|US902-928, AU915-928|
+|Chile|902 - 928 MHz||
+|(915-928MHz usable)|AU915-928, AS923, US902-928||
+|China|920.5 - 924.5 MHz|AS923|
+||779 - 787 MHz|CN779-787|
+||470 - 510 MHz|CN470-510|
+||433.05 - 434.79 MHz|EU433|
+||314-316 MHz|Other|
+||430 - 432 MHz|Other|
+||840 - 845 MHz|Other|
+|Colombia|902 - 928 MHz|AU915-928, US902-928|
+|Congo Rep.||None|
+|Costa Rica|920.5 - 928 MHz|AS923|
+|Croatia|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Cuba|433.05 - 434.79 MHz|EU433|
+||915 - 921 MHz|Other|
+|Cyprus|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Czech Republic|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Denmark|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Dominican Republic|915 - 928 MHz|AU915-928|
+|Ecuador|902 - 928 MHz|AU915-928, US902-928, AS923|
+|Egypt|433.05 - 434.79 MHz|EU433|
+||863 - 876 MHz|EU863-870|
+|Estonia|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Finland|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+|France|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Georgia||None|
+|Germany|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Ghana||None|
+|Greece Guatemala|433.05 - 434.79 MHz|EU433|
+||868 -  870 MHz|EU863-870|
+||902 - 928 MHz (915-928 MHz usable)|AU915-928, AS923, US902-928|
+|Haiti||None|
+|Honduras|915-928 MHz|AU915-928|
+|Hong Kong|433.05 - 434.79 MHz|EU433|
+||865 - 868 MHz|Other|
+||920 - 925 MHz|AS923|
+|Hungary|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Iceland|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+|India|865 - 867 MHz|IN765-867|
+|Indonesia|923 - 925 MHz|AS923|
+|Iraq||None|
+|Iran|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||915 - 918 MHz|Other|
+|Ireland|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Israel|433.05 - 434.79 MHz|EU433|
+||915 - 917 MHz|Other|
+|Italy|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Ivory Coast||None|
+|Jamaica|902 - 928 MHz (915-928 MHz usable)|AU915-928, US902-928|
+|Japan|920.6 - 928.0 MHz (steps of 200kHz)|AS923|
+||920.8 - 927.8 MHz (steps of 600kHz)|AS923|
+|Jordan|865 - 868 MHz|Other|
+|Kazakhstan|433.05 - 434.79 MHz|EU433|
+|Kenya||None|
+|Korea (DPR)||None|
+|Kuwait|433.05 - 434.79 MHz|EU433|
+|Kyrgyz Republic||None|
+|Laos|433 - 435 MHz|EU433|
+||862 - 875 MHz|EU863-870|
+||923 - 925 MHz|AS923|
+|Latvia|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Lebanon|433 - 435 MHz|EU433|
+||862 - 870 MHz|EU863-870|
+|Liechtenstein|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+|Libya||None|
+|Lithuania|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Luxembourg|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Macao||None|
+|Macedonia, FYR|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Malaysia|433 - 435 MHz|EU433|
+||919 – 924 MHz|AS923|
+|Maldives||None|
+|Malta|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Mauritius||None|
+|Mexico|902 - 928 MHz|US902-928, AU915-928|
+|Moldova|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Mongolia||None|
+|Montenegro|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Morocco|433.05 - 434.79 MHz|EU433|
+||867.6 - 869 MHz|EU863-870|
+|Netherlands|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|New-Zealand|915 - 928 MHz|AS923, AU915-928|
+||819 - 824 MHz|Other|
+||864 - 870MHz|EU863-870|
+||433.05 - 434.79 MHz|EU433|
+|Nicaragua|902 - 928 MHz (915-928 MHz usable)|AU915-928, US902-928|
+|Nigeria|863 - 870 MHz|EU863-870|
+|Norway|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Oman|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Pakistan|433.05 - 434.79 MHz|EU433|
+||865 - 869 MHz|EU863-870|
+||900 - 925 MHz|AS923|
+|Panama|902 - 928 MHz|AU915-928, US902-928, AS923|
+|Paraguay|433.05 - 434.79 MHz|EU433|
+||915 - 928 MHz|AU915-928, AS923|
+|Peru|915 - 928 MHz|AU915-928, AS923|
+|Papua New Guinea|915 - 925 MHz|AU915-928|
+|Philippines|915 - 918 MHz|Other|
+||868 – 869.2 MHz|EU863-870|
+||869.7 - 870 MHz|EU863-870|
+||433.05 - 434.79 MHz|EU433|
+|Poland|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Portugal|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Qatar|433.05 - 434.79 MHz|EU433|
+||868 - 868.6 MHz|EU863-870|
+||868.7 - 869.2 MHz|EU863-870|
+||869.4 - 869.65 MHz|EU863-870|
+||869.7 - 870 MHz|EU863-870|
+|Romania|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Russian federation|866 - 868 MHz (Licensed)|RU864-870|
+||864 - 865 MHz|RU864-870|
+||868.7 - 869.2 MHz|RU864-870|
+||433.075 - 434.75 MHz|EU433|
+||916 - 921 MHz (Licensed)|Other|
+|Salvador|915-928|AU915-928, AS923|
+|Saudi Arabia|863 - 870 MHz|EU863-870|
+||433.05 - 434.79 MHz|EU433|
+|Senegal||None|
+|Serbia|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Singapore|920 - 925 MHz|AS923|
+||433.05 - 434.79 MHz|EU433|
+||866 - 869 MHz|EU863-870|
+|Slovak Republic|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|Slovenia|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|South Africa|433.05 - 434.79 MHz|EU433|
+||865 – 868.6 MHz|EU863-870|
+||868.7 – 869.2 MHz|EU863-870|
+||869.4 – 869.65 MHz|EU863-870|
+||869.7 – 870 MHz|EU863-870|
+||915 - 921 MHz|Other|
+|South Korea|917 - 923.5 MHz|KR920-923|
+|Spain|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Sri Lanka|433.05 - 434.79 MHz|EU433|
+|Sudan||None|
+|Sweden|433.05 - 434.79 MHz|EU433|
+||868 -  870 MHz|EU863-870|
+|Switzerland|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+|Syrian Arab Rep.||None|
+|Taiwan|920 - 925 MHz|AS923|
+|Tajikistan||None|
+|Tanzania||None|
+|Thailand|433.05 - 434.79 MHz|EU433|
+||920 - 925 MHz|AS923|
+|Trinidad and Tobago||None|
+|Tunisia|433.05 - 434.79 MHz|EU433|
+||868 – 868.6 MHz|EU863-870|
+||868.7 – 869.2 MHz|EU863-870|
+||869.4 – 869.65 MHz|EU863-870|
+||869.7 – 870 MHz|EU863-870|
+|Turkey|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+|Turkmenistan||None|
+|Uganda|433.05 - 434.79 MHz|EU433|
+||865 - 867.6 MHz|Other|
+||869.25 - 869.7 MHz|Other|
+||923 - 925 MHz|AS923|
+|Ukraine|433.05 - 434.79 MHz|EU433|
+||863 - 865 MHz|EU863-870|
+||868 - 868.6 MHz|EU863-870|
+|United Arab Emirates|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+||870 - 875.8 MHz|Other|
+||915 - 921 MHz|Other|
+|United Kingdom|433.05 - 434.79 MHz|EU433|
+||863 - 873 MHz|EU863-870|
+||918 - 921 MHz|Other|
+|United States|902 - 928 MHz|US902-928, AU915-928|
+|Uruguay|902 - 928 MHz (915 - 928 MHz usable)|AU915-928, AS923, US902-928|
+|Uzbekistan|433.05 - 434.79 MHz|EU433|
+|Venezuela|922 - 928 MHz|AS923|
+|Vietnam|433.05 - 434.79 MHz|EU433|
+||863 - 870 MHz|EU863-870|
+||918 - 923 MHz|Other|
+|Yemen, Rep.||None|
+|Zimbabwe||None|
+**Table 1: Channel Plan per Country**
 
 ## 2 LoRaWAN Regional Parameters
 
@@ -164,9 +441,9 @@ The maximum **MACPayload** size length (*M)* is given by the following table. It
 |2|59|51|
 |3|123|115|
 |4|230|222|
-|5|230|222  |
-|6|230|222  |
-|7|230|222  |
+|5|230|222|
+|6|230|222|
+|7|230|222|
 |8:15|Not defined|Not defined|
 **Table 7: EU863-870 maximum payload size**
 
@@ -577,9 +854,9 @@ The maximum **MACPayload** size length (*M*) is given by the following table. It
 |2|59|51|
 |3|123|115|
 |4|230|222|
-|5|230|222  |
-|6|250|242  |
-|7|230|222  |
+|5|230|222|
+|6|250|242|
+|7|230|222|
 |8:15|Not defined|Not defined|
 
 **Table 22: CN780 maximum payload size**
@@ -768,9 +1045,9 @@ The maximum **MACPayload** size length (*M*) is given by the following table. It
 |2|59|51|
 |3|123|115|
 |4|230|222|
-|5|230|222  |
-|6|230|222  |
-|7|230|222  |
+|5|230|222|
+|6|230|222|
+|7|230|222|
 |8:15|Not defined|Not defined|
 **Table 30: EU433 maximum payload size**
 
@@ -1011,7 +1288,7 @@ The allowed values for RX1DROffset are in the [0:5] range. Values in the range [
 The beacons are transmitted using the following settings:
 |DR|10|Corresponds to SF10 spreading factor with 500kHz bw|
 |---|---|---|
-|CR |1|Coding rate = 4/5|
+|CR|1|Coding rate = 4/5|
 |Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
 |frequencies|923.3 to 927.5MHz with 600kHz steps|Beaconing is performed on the same channel that normal downstream traffic as defined in the Class A specification|
 **Table 40 : AU915-928 beacon settings**
@@ -1549,7 +1826,7 @@ The following encoding is used for Data Rate (DR), and EIRP Output Power (TXPowe
 
 |TXPower|Configuration, max EIRP allowed|
 |---|---|
-|0|MaxEIRP - |
+|0|MaxEIRP -|
 |1|MaxEIRP - 2 dBm|
 |2|MaxEIRP - 4 dBm|
 |3|MaxEIRP - 6 dBm|
@@ -1664,8 +1941,8 @@ The following parameters are recommended values for the KR920-923Mhz band.
 
 |Variable name|Variable value|
 |---|---|
-|RECEIVE_DELAY1 |1 s|
-|RECEIVE_DELAY2 |2 s (must be RECEIVE_DELAY1 + 1s)|
+|RECEIVE_DELAY1|1 s|
+|RECEIVE_DELAY2|2 s (must be RECEIVE_DELAY1 + 1s)|
 |JOIN_ACCEPT_DELAY1|5 s|
 |JOIN_ACCEPT_DELAY2|6 s|
 |MAX_FCNT_GAP|16384|
@@ -1848,8 +2125,8 @@ The following parameters are recommended values for the INDIA 865-867MHz band.
 
 |Variable name|Variable value|
 |---|---|
-|RECEIVE_DELAY1 |1 s|
-|RECEIVE_DELAY2 |2 s (must be RECEIVE_DELAY1 + 1s)|
+|RECEIVE_DELAY1|1 s|
+|RECEIVE_DELAY2|2 s (must be RECEIVE_DELAY1 + 1s)|
 |JOIN_ACCEPT_DELAY1|5 s|
 |JOIN_ACCEPT_DELAY2|6 s|
 |MAX_FCNT_GAP|16384|
