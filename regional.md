@@ -321,9 +321,26 @@ In order to support the identification of LoRaWAN channel plans for a given coun
 
 ## 2 LoRaWAN Regional Parameters
 
-### 2.1 EU 863-870MHz ISM Band
+### 2.1 Regional Parameter Common Names
 
-#### 2.1.1 EU863-870 Preamble Format
+In order to support the identification of LoRaWAN channel plans referenced by other specification documents, the table below provides a quick reference of common channel plans listed for each formal plan name.
+
+|Channel Plan|Common Name|
+|---|---|
+|EU863-870|EU868|
+|US902-928|US915|
+|CN779-787|CN779|
+|EU433|EU433|
+|AU915-928|AU915|
+|CN470-510|CN470|
+|AS923|AS923|
+|KR920-923|KR920|
+|IN865-867|IN865|
+|RU864-870|RU864|
+
+### 2.2 EU863-870MHz ISM Band
+
+#### 2.2.1 EU863-870 Preamble Format
 
 The following synchronization words should be used:
 
@@ -332,9 +349,9 @@ The following synchronization words should be used:
 |**LORA**|0x34|8 symbols|
 |**GFSK**|0xC194C1|5 bytes|
 
-**Table 1: EU863-870 synch words**
+**Table 2: EU863-870 synch words**
 
-#### 2.1.2 EU863-870 ISM Band channel frequencies
+#### 2.2.2 EU863-870 ISM Band channel frequencies
 
 This section applies to any region where the ISM radio spectrum use is defined by the ETSI \[EN300.220\] standard.
 
@@ -344,15 +361,15 @@ The network channels can be freely attributed by the network operator. However t
 |---|---|---|---|---|---|
 |LoRa|125|868.10<br/>868.30<br/>868.50<br/>|DR0 to DR5 / 0.3-5 kbps|3|<1%|
 
-**Table 2: EU863-870 default channels**
+**Table 3: EU863-870 default channels**
 
 In order to access the physical medium the ETSI regulations impose some restrictions such  maximum time the transmitter can be on or the maximum time a transmitter can transmit per hour. The ETSI regulations allow the choice of using either a duty-cycle limitation or a so-called **Listen Before Talk Adaptive Frequency  gility** (LBT AFA) transmissions  management. The current LoRaWAN specification exclusively uses duty-cycled limited  transmissions to comply with the ETSI regulations.
 
-EU868Mhz end-devices should be capable of operating in the 863 to 870 MHz frequency band and should feature a channel data structure to store the parameters of at least 16 channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
+EU868Mhz end-devices SHALL be capable of operating in the 863 to 870 MHz frequency band and SHALL feature a channel data structure to store the parameters of at least 16 channels. A channel data structure corresponds to a frequency and a set of data rates usable on this frequency.
 
 The first three channels correspond to 868.1, 868.3, and 868.5 MHz / DR0 to DR5 and must be implemented in every end-device. Those default channels cannot be modified through the ***NewChannelReq*** command and guarantee a minimal common channel set between end-devices and network gateways.
 
-The following table gives the list of frequencies that should be used by end-devices to broadcast the JoinReq message. The JoinReq message transmit duty-cycle shall follow the rules described in chapter "Retransmissions back-off" of the LoRaWAN specification document.
+The following table gives the list of frequencies that SHALL be used by end-devices to broadcast the JoinReq message. The JoinReq message transmit duty-cycle shall follow the rules described in chapter "Retransmissions back-off" of the LoRaWAN specification document.
 
 |**Modulation**|**Bandwidth [kHz]**|**Channel Frequency [MHz]**|**FSK Bitrate or LoRa DR / Bitrate**|**Nb Channels**|**Duty cycle**|
 |---|---|---|---|---|---|
@@ -360,7 +377,7 @@ The following table gives the list of frequencies that should be used by end-dev
 
 **Table 3: EU863-870 JoinReq Channel List**
 
-#### 2.1.3 EU863-870 Data Rate and End-point Output Power encoding
+#### 2.2.3 EU863-870 Data Rate and End-point Output Power encoding
 
 There is no dwell time limitation for the EU863-870 PHY layer. The ***TxParamSetupReq*** MAC command is not implemented in EU863-870 devices.
 
@@ -377,22 +394,22 @@ The following encoding is used for Data Rate (DR) and End-point EIRP (TXPower) i
 |6|LoRa: SF7 / 250kHz|10000|
 |7|LoRa: FSK: 50 kbps|50000|
 |8..15|RFU|
-**Table 4: TX data rate table**
+**Table 5: EU863-870 TX data rate table**
 
 EIRP<sup>[1](#fn17)</sup> refers to the Equivalent Isotropically Radiated Power, which is the radiated output power referenced to an isotropic antenna radiating power equally in all directions and whose gain is expressed in dBi. 
 
 |**TXPower**|**Configuration (ERP)**|
 |---|---|
-|0|MaxEIRP|
-|1|MaxEIRP - 2dB|
-|2|MaxEIRP - 4dB|
-|3|MaxEIRP - 6dB|
-|4|MaxEIRP - 8dB|
-|5|MaxEIRP - 10dB|
-|6|MaxEIRP - 12dB|
-|7|MaxEIRP - 14dB|
+|0|Max EIRP|
+|1|Max EIRP - 2dB|
+|2|Max EIRP - 4dB|
+|3|Max EIRP - 6dB|
+|4|Max EIRP - 8dB|
+|5|Max EIRP - 10dB|
+|6|Max EIRP - 12dB|
+|7|Max EIRP - 14dB|
 |8..15|RFU|
-**Table 5: TX power table**
+**Table 6: EU863-870 TX power table**
 
 By default MaxEIRP is considered to be +16dBm. If the end-device cannot achieve 16dBm EIRP, the Max EIRP should be communicated to the network server using an out-of-band channel during the end-device commissioning process.
 
@@ -402,37 +419,37 @@ By default MaxEIRP is considered to be +16dBm. If the end-device cannot achieve 
 
 The EU 863-870 ISM band LoRaWAN implements an optional **channel frequency list** (CFlist) of 16 octets in the JoinAccept message.
 
-In this case the CFList is a list of five channel frequencies for the channels four to eight  whereby each frequency is encoded as a 24 bits unsigned integer (three octets). All these  channels are usable for DR0 to DR5 125kHz LoRa modulation. The list of frequencies is followed by a single RFU octet for a total of 16 octets.
+In this case the CFList is a list of five channel frequencies for the channels three to seven whereby each frequency is encoded as a 24 bits unsigned integer (three octets). All these channels are usable for DR0 to DR5 125kHz LoRa modulation. The list of frequencies is followed by a single CFListType octet for a total of 16 octets. The CFListType SHALL be equal to zero (0) to indicate that the CFList contains a list of frequencies.
 
 |**Size (bytes)**|3|3|3|3|3|1|
 |---|---|---|---|---|---|---|
-|**CFList**|Freq Ch4|Freq Ch5|Freq Ch6|Freq Ch7|Freq Ch8|RFU|
+|**CFList**|Freq Ch4|Freq Ch5|Freq Ch6|Freq Ch7|Freq Ch8|CFListType|
 
 The actual channel frequency in Hz is 100 x frequency whereby values representing  frequencies below 100 Mhz are reserved for future use. This allows setting the frequency of  a channel anywhere between 100 MHz to 1.67 GHz in 100 Hz steps. Unused channels have
 
-a frequency value of 0. The **CFList** is optional and its presence can be detected by the length of the join-accept message. If present, the **CFList** replaces all the previous channels  stored in the end-device apart from the three default channels as defined in Chapter ERROR. The  newly defined channels are immediately enabled and usable by the end-device for  communication.
+a frequency value of 0. The **CFList** is optional and its presence can be detected by the length of the join-accept message. If present, the **CFList** SHALL replace all the previous channels  stored in the end-device apart from the three default channels as defined in Chapter ERROR. The  newly defined channels are immediately enabled and usable by the end-device for  communication.
 
-#### 2.1.5 EU863-870 LinkAdrReq command
+#### 2.2.5 EU863-870 LinkAdrReq command
 
 The EU863-870 LoRaWAN only supports a maximum of 16 channels. When **ChMaskCntl**  field is 0 the ChMask field individually enables/disables each of the 16 channels.
 
 |**ChMaskCntl**|**ChMask applies to**|
 |---|---|
-|0|Channels 1 to 16|
+|0|Channels 0 to 15|
 |1|RFU|
 |..|..|
 |4|RFU|
 |5|RFU|
-|6|All channels ON The device should enable all currently defined channels independently of the ChMask field value.|
+|6|All channels ON The device SHALL enable all currently defined channels independently of the ChMask field value.|
 |7|RFU|
 
-**Table 6: ChMaskCntl value table**
+**Table 7: EU863-870 ChMaskCntl value table**
 
-If the ChMaskCntl field value is one of values meaning RFU, the end-device should reject the  command and unset the "**Channel mask ACK**" bit in its response.
+If the ChMaskCntl field value is one of values meaning RFU, the end-device SHALL reject the  command and unset the "**Channel mask ACK**" bit in its response.
 
-#### 2.1.6 EU863-870 Maximum payload size
+#### 2.2.6 EU863-870 Maximum payload size
 
-The maximum **MACPayload** size length (*M)* is given by the following table. It is derived from  limitation of the PHY layer depending on the effective modulation rate used taking into  account a possible repeater encapsulation layer. The maximum application payload length in  the absence of the optional **FOpt** control field (*N*) is also given for information only. The  value of N might be smaller if the **FOpt** field is not empty:
+The maximum **MACPayload** size length (*M)* is given by the following table. It is derived from  limitation of the PHY layer depending on the effective modulation rate used taking into  account a possible repeater encapsulation layer. The maximum application payload length in  the absence of the optional **FOpt** control field (*N*) is also given for information only. The  value of N MAY be smaller if the **FOpt** field is not empty:
 
 |**DataRate**|***M***|***N***|
 |---|---|---|
@@ -445,7 +462,7 @@ The maximum **MACPayload** size length (*M)* is given by the following table. It
 |6|230|222|
 |7|230|222|
 |8:15|Not defined|Not defined|
-**Table 7: EU863-870 maximum payload size**
+**Table 8: EU863-870 maximum payload size**
 
 If the end-device will never operate with a repeater then the maximum application payload  length in the absence of the optional **FOpt** control field should be:
 
@@ -461,11 +478,11 @@ If the end-device will never operate with a repeater then the maximum applicatio
 |7|250|242|
 |8:15|Not defined|Not defined|
 
-**Table 8 : EU863-870 maximum payload size (not repeater compatible)**
+**Table 9 : EU863-870 maximum payload size (not repeater compatible)**
 
-#### 2.1.7 EU863-870 Receive windows
+#### 2.2.7 EU863-870 Receive windows
 
-The RX1 receive window uses the same channel than the preceding uplink. The data rate is  a function of the uplink data rate and the RX1DROffset as given by the following table. The allowed values for RX1DROffset are in the \[0:5\] range. Values in the\[6:7\] range are 10 reserved for future use.
+The RX1 receive window uses the same channel AS the preceding uplink. The data rate is  a function of the uplink data rate and the RX1DROffset as given by the following table. The allowed values for RX1DROffset are in the \[0:5\] range. Values in the\[6:7\] range are 10 reserved for future use.
 
 |**RX1DROffset**|**0**|**1**|**2**|**3**|**4**|**5**|
 |---|---|---|---|---|---|---|
@@ -478,11 +495,11 @@ The RX1 receive window uses the same channel than the preceding uplink. The data
 |DR5|DR5|DR4|DR3|DR2|DR1|DR0|
 |DR6|DR6|DR5|DR4|DR3|DR2|DR1|
 |DR7|DR7|DR6|DR5|DR4|DR3|DR2|
-**Table 9: EU863-870 downlink RX1 data rate mapping**
+**Table 10: EU863-870 downlink RX1 data rate mapping**
 
 The RX2 receive window uses a fixed frequency and data rate. The default parameters are 869.525 MHz / DR0 (SF12, 125 kHz)
 
-#### 2.1.8 EU863-870 Class B beacon and default downlink channel
+#### 2.2.8 EU863-870 Class B beacon and default downlink channel
 
 The beacons SHALL be transmitted using the following settings
 
@@ -490,7 +507,7 @@ The beacons SHALL be transmitted using the following settings
 |---|---|---|
 |CR|1|Colding rate = 4/5|
 |Signal polarity|Non-inverted|As opposed to normal downlink traffic which uses inverted signal polarity|
-**Table 10: EU863-870 beacon settings**
+**Table 11: EU863-870 beacon settings**
 
 The beacon frame content is:
 |**Size (bytes)**|2|4|2|7|2|
@@ -501,7 +518,7 @@ The beacon default broadcast frequency is 869.525MHz.
 
 The class B default downlink pingSlot frequency is 869.525MHz
 
-#### 2.1.9 EU863-870 Default Settings
+#### 2.2.9 EU863-870 Default Settings
 
 The following parameters are recommended values for the EU863-870Mhz band.
 
